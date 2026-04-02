@@ -5,7 +5,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Truck, Monitor, Timer, ThumbsUp, ChevronUp, ChevronDown, Mail, Globe, Linkedin, Calendar, ArrowUpRight } from "lucide-react";
+import { Truck, Monitor, Timer, ThumbsUp, ChevronUp, ChevronDown, Mail, Globe, Linkedin, Calendar, ArrowUpRight, Copy, ExternalLink, X, Check } from "lucide-react";
 
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 
@@ -100,9 +100,10 @@ export default function App() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
 
   const navItems = [
-    { label: "Who We Are", index: 1 },
+    { label: "Who we are", index: 1 },
     { label: "Expertise", index: 2 },
     { 
       label: "Energy Intelligence", 
@@ -126,7 +127,7 @@ export default function App() {
       ]
     },
     { label: "Results", index: 14 },
-    { label: "Contact", index: 15 }
+    { label: "Contacts", index: 15 }
   ];
 
   const stats = [
@@ -232,7 +233,7 @@ export default function App() {
     <div className="min-h-screen bg-black overflow-x-hidden selection:bg-brand-yellow selection:text-black">
       {/* Top Header Navigation */}
       <header className="fixed top-0 left-0 right-0 z-[100] bg-black/60 backdrop-blur-xl border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 h-20 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 lg:px-12 h-20 flex items-center justify-between">
           {/* Wami Logo (Left) */}
           <button onClick={scrollToTop} className="hover:opacity-80 transition-opacity cursor-pointer">
             <img 
@@ -258,7 +259,7 @@ export default function App() {
                     onMouseEnter={() => setActiveDropdown(item.label)}
                     onMouseLeave={() => setActiveDropdown(null)}
                   >
-                    <button className={`px-4 py-2 rounded-full text-sm font-bold uppercase tracking-widest flex items-center gap-2 transition-all duration-300 cursor-pointer ${
+                    <button className={`px-4 py-2 rounded-full text-base font-medium flex items-center gap-2 transition-all duration-300 cursor-pointer ${
                       isActive ? "text-brand-yellow bg-white/5" : "text-white/60 hover:text-white"
                     }`}>
                       {item.label}
@@ -282,7 +283,7 @@ export default function App() {
                                 scrollToSlide(subItem.index);
                                 setActiveDropdown(null);
                               }}
-                              className={`w-full text-left px-4 py-3 rounded-xl text-[11px] font-bold uppercase tracking-widest transition-all duration-200 cursor-pointer ${
+                              className={`w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 cursor-pointer ${
                                 currentSlide === subItem.index + 1
                                   ? "bg-brand-yellow text-black"
                                   : "text-white/60 hover:bg-white/5 hover:text-white"
@@ -302,7 +303,7 @@ export default function App() {
                 <button
                   key={i}
                   onClick={() => scrollToSlide(item.index || 0)}
-                  className={`px-4 py-2 rounded-full text-sm font-bold uppercase tracking-widest transition-all duration-300 cursor-pointer ${
+                  className={`px-4 py-2 rounded-full text-base font-medium transition-all duration-300 cursor-pointer ${
                     isActive ? "text-brand-yellow bg-white/5" : "text-white/60 hover:text-white"
                   }`}
                 >
@@ -350,46 +351,108 @@ export default function App() {
         {/* Mobile Menu Overlay */}
         <AnimatePresence>
           {isMobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="lg:hidden bg-black/95 border-b border-white/10 overflow-hidden"
-            >
-              <div className="px-6 py-8 flex flex-col gap-6">
-                {navItems.map((item, i) => (
-                  <div key={i} className="flex flex-col gap-3">
-                    <div className="text-brand-yellow text-[10px] font-black uppercase tracking-[0.3em] opacity-50">
-                      {item.label}
-                    </div>
-                    {item.items ? (
-                      <div className="grid grid-cols-1 gap-2 pl-2">
-                        {item.items.map((sub, si) => (
-                          <button
-                            key={si}
-                            onClick={() => scrollToSlide(sub.index)}
-                            className={`text-left py-2 text-lg font-medium transition-colors cursor-pointer ${
-                              currentSlide === sub.index + 1 ? "text-white" : "text-white/40"
+            <>
+              {/* Backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="fixed inset-0 z-[90] bg-black/60 backdrop-blur-sm lg:hidden"
+              />
+              
+              {/* Menu Panel */}
+              <motion.div
+                initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                className="fixed top-24 left-4 right-4 z-[100] lg:hidden bg-black border border-white/10 rounded-3xl shadow-2xl overflow-hidden max-h-[80vh] overflow-y-auto"
+              >
+                <div className="p-6 flex flex-col gap-2">
+                  {navItems.map((item, i) => (
+                    <motion.div 
+                      key={i}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.05 }}
+                      className="flex flex-col"
+                    >
+                      {item.items ? (
+                        <div className="flex flex-col">
+                          <button 
+                            onClick={() => setActiveDropdown(activeDropdown === item.label ? null : item.label)}
+                            className={`flex items-center justify-between w-full px-4 py-4 rounded-2xl text-xl font-bold transition-all cursor-pointer ${
+                              currentSlide >= (item.items[0].index + 1) && currentSlide <= (item.items[item.items.length - 1].index + 1)
+                                ? "text-brand-yellow" 
+                                : "text-white/80"
                             }`}
                           >
-                            {sub.label}
+                            {item.label}
+                            <ChevronDown size={20} className={`transition-transform duration-300 ${activeDropdown === item.label ? "rotate-180" : ""}`} />
                           </button>
-                        ))}
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => scrollToSlide(item.index || 0)}
-                        className={`text-left py-2 text-2xl font-bold transition-colors cursor-pointer ${
-                          currentSlide === (item.index || 0) + 1 ? "text-white" : "text-white/40"
-                        }`}
-                      >
-                        {item.label}
-                      </button>
-                    )}
+                          
+                          <AnimatePresence>
+                            {activeDropdown === item.label && (
+                              <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: "auto", opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                className="overflow-hidden bg-white/5 rounded-2xl mt-1"
+                              >
+                                <div className="p-2 flex flex-col gap-1">
+                                  {item.items.map((sub, si) => (
+                                    <button
+                                      key={si}
+                                      onClick={() => {
+                                        scrollToSlide(sub.index);
+                                        setIsMobileMenuOpen(false);
+                                      }}
+                                      className={`text-left px-4 py-3 rounded-xl text-base font-medium transition-all cursor-pointer ${
+                                        currentSlide === sub.index + 1 
+                                          ? "bg-brand-yellow text-black" 
+                                          : "text-white/60 hover:bg-white/5 hover:text-white"
+                                      }`}
+                                    >
+                                      {sub.label}
+                                    </button>
+                                  ))}
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => scrollToSlide(item.index || 0)}
+                          className={`text-left px-4 py-4 rounded-2xl text-xl font-bold transition-all cursor-pointer ${
+                            currentSlide === (item.index || 0) + 1 
+                              ? "text-brand-yellow" 
+                              : "text-white/80 hover:bg-white/5 hover:text-white"
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      )}
+                    </motion.div>
+                  ))}
+                </div>
+                
+                {/* Mobile Menu Footer */}
+                <div className="p-4 bg-white/5 border-t border-white/10 flex items-center justify-between">
+                  <img 
+                    src="/images/logo_tigo.svg" 
+                    alt="Tigo" 
+                    className="h-4 w-auto opacity-50"
+                    referrerPolicy="no-referrer"
+                  />
+                  <div className="flex gap-4">
+                    <Linkedin size={18} className="text-white/40" />
+                    <Globe size={18} className="text-white/40" />
                   </div>
-                ))}
-              </div>
-            </motion.div>
+                </div>
+              </motion.div>
+            </>
           )}
         </AnimatePresence>
       </header>
@@ -413,36 +476,14 @@ export default function App() {
       {/* Slide 1: Hero Section */}
       <section 
         ref={(el) => (sectionRefs.current[0] = el)}
-        className="relative min-h-screen flex flex-col items-start lg:items-center justify-center px-8 lg:px-20 py-32 lg:py-48 text-left lg:text-center overflow-hidden"
+        className="relative min-h-screen flex flex-col items-start lg:items-center justify-center px-4 lg:px-20 py-32 lg:py-48 text-left lg:text-center overflow-hidden"
       >
-        {/* Decorative Image 2 */}
-        <motion.div
-          animate={{ 
-            y: [0, 30, 0],
-            rotate: [0, -5, 0]
-          }}
-          transition={{ 
-            duration: 7, 
-            repeat: Infinity, 
-            ease: "easeInOut" 
-          }}
-          className="absolute top-20 left-10 w-[300px] h-[300px] opacity-10 pointer-events-none z-0"
-        >
-          <img 
-            src="/images/image2.svg" 
-            alt="Decoration 2 Hero" 
-            className="w-full h-full object-contain"
-            referrerPolicy="no-referrer"
-          />
-        </motion.div>
-        {/* Logos Container - REMOVED, moved to Header */}
-
         {/* Main Content */}
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-          className="w-full max-w-7xl mx-auto z-10"
+          className="w-full max-w-7xl mx-auto z-10 lg:-mt-24 -mt-12"
         >
           <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl mb-8 leading-[0.9] tracking-tighter">
             <motion.span 
@@ -492,20 +533,20 @@ export default function App() {
         </motion.div>
 
         {/* Hero Image at Bottom with Smooth Scaling Animation */}
-        <div className="absolute bottom-[20%] left-0 right-0 w-full pointer-events-none z-0 flex flex-col items-center">
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[140%] pointer-events-none z-0 flex flex-col items-center origin-bottom">
           <motion.img 
             src="/images/image_hero.svg" 
             alt="Hero Decoration" 
             animate={{ 
-              scale: [1.15, 1.25, 1.15],
+              scale: [1.2, 1.4, 1.2],
               opacity: [0.8, 1, 0.8]
             }}
             transition={{ 
-              duration: 5, 
+              duration: 6, 
               repeat: Infinity, 
               ease: "easeInOut" 
             }}
-            className="w-full h-auto object-cover relative z-10 scale-y-125"
+            className="w-full h-auto object-cover relative z-10"
             referrerPolicy="no-referrer"
           />
         </div>
@@ -514,7 +555,7 @@ export default function App() {
       {/* Slide 2: Who We Are */}
       <section 
         ref={(el) => (sectionRefs.current[1] = el)}
-        className="relative min-h-screen bg-black flex flex-col justify-center px-8 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
+        className="relative min-h-screen bg-black flex flex-col justify-center px-4 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
       >
         {/* Top Header Section */}
         <div className="relative z-10 max-w-7xl mx-auto w-full">
@@ -553,8 +594,8 @@ export default function App() {
               We Always Make <span className="text-brand-yellow">Innovation</span>
             </h3>
             
-            {/* Double Spirograph Graphic */}
-            <div className="relative w-full aspect-square max-w-[420px] mx-auto lg:mx-0 flex items-center justify-center overflow-hidden">
+            {/* Double Spirograph Graphic - Desktop Only */}
+            <div className="hidden lg:flex relative w-full aspect-square max-w-[420px] mx-auto lg:mx-0 items-center justify-center overflow-hidden">
               {/* Layer 1: Outer/Base rotation */}
               <motion.img 
                 src="/images/image_section2.svg"
@@ -653,13 +694,38 @@ export default function App() {
             </div>
           </div>
         </div>
+
+        {/* Double Spirograph Graphic - Mobile Only (at the bottom) */}
+        <div className="lg:hidden relative w-full aspect-square max-w-[300px] mx-auto mt-12 flex items-center justify-center overflow-hidden">
+          {/* Layer 1: Outer/Base rotation */}
+          <motion.img 
+            src="/images/image_section2.svg"
+            alt="Spirograph Layer 1"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+            className="absolute w-full h-full opacity-80"
+            referrerPolicy="no-referrer"
+          />
+          {/* Layer 2: Inner/Counter rotation for "double" effect */}
+          <motion.img 
+            src="/images/image_section2.svg"
+            alt="Spirograph Layer 2"
+            animate={{ rotate: -360, scale: [1, 1.1, 1] }}
+            transition={{ 
+              rotate: { duration: 45, repeat: Infinity, ease: "linear" },
+              scale: { duration: 8, repeat: Infinity, ease: "easeInOut" }
+            }}
+            className="absolute w-[90%] h-[90%] opacity-60 mix-blend-screen"
+            referrerPolicy="no-referrer"
+          />
+        </div>
       </div>
     </section>
 
       {/* Slide 3: Expertise */}
       <section 
         ref={(el) => (sectionRefs.current[2] = el)}
-        className="relative min-h-screen bg-black flex flex-col justify-center px-8 lg:px-20 py-20 border-t border-white/10"
+        className="relative min-h-screen bg-black flex flex-col justify-center px-4 lg:px-20 py-20 border-t border-white/10"
       >
         {/* Top Header Section */}
         <div className="relative z-10 max-w-7xl mx-auto w-full">
@@ -689,7 +755,7 @@ export default function App() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
-                className="bg-white/5 p-8 rounded-2xl border border-white/10 hover:border-brand-yellow/30 transition-colors duration-300"
+                className="bg-white/5 p-3 md:p-8 rounded-2xl border border-white/10 hover:border-brand-yellow/30 transition-colors duration-300"
               >
                 <h4 className="text-xl font-bold text-brand-yellow mb-4">
                   {item.title}
@@ -753,7 +819,7 @@ export default function App() {
     </section>
       <section 
         ref={(el) => (sectionRefs.current[3] = el)}
-        className="relative min-h-screen bg-black flex flex-col justify-center px-8 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
+        className="relative min-h-screen bg-black flex flex-col justify-center px-4 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
       >
         {/* Partner Logo - REMOVED, moved to Header */}
 
@@ -806,8 +872,8 @@ export default function App() {
             <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium tracking-tight">
               <span className="text-brand-yellow">The</span> <span className="text-white">mission</span>
             </h3>
-            <div className="bg-black/40 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none p-4 md:p-0 rounded-xl">
-              <p className="text-lg md:text-xl lg:text-2xl text-white/90 leading-tight font-light tracking-tight">
+            <div className="p-0 md:p-0">
+              <p className="text-lg md:text-xl lg:text-2xl text-white/90 leading-tight font-light tracking-tight text-left">
                 To develop a SaaS platform for solar installers and operators, offering control over installation and management of photovoltaic systems, from modules to multi-site portfolios.
               </p>
             </div>
@@ -817,7 +883,7 @@ export default function App() {
       {/* Slide 5: The Challenge & Strategic Approach */}
       <section 
         ref={(el) => (sectionRefs.current[4] = el)}
-        className="relative min-h-screen bg-black flex flex-col justify-center px-8 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
+        className="relative min-h-screen bg-black flex flex-col justify-center px-4 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
       >
         {/* Decorative Image 2 */}
         <motion.div
@@ -896,7 +962,7 @@ export default function App() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="bg-white/5 p-8 rounded-2xl border border-white/10"
+                  className="bg-white/5 p-3 md:p-8 rounded-2xl border border-white/10"
                 >
                   <p className="text-lg md:text-xl leading-relaxed">
                     <span className="text-brand-yellow font-bold">{item.label}:</span>{" "}
@@ -927,7 +993,7 @@ export default function App() {
                         setActiveApproach((prev) => (prev - 1 + strategicApproachItems.length) % strategicApproachItems.length);
                       }
                     }}
-                    className="absolute inset-0 bg-white/5 p-8 rounded-2xl border border-white/10 flex flex-col justify-center cursor-grab active:cursor-grabbing backface-hidden"
+                    className="absolute inset-0 bg-white/5 p-3 md:p-8 rounded-2xl border border-white/10 flex flex-col justify-center cursor-grab active:cursor-grabbing backface-hidden"
                   >
                     <p className="text-lg leading-relaxed">
                       <span className="text-brand-yellow font-bold block mb-2">{strategicApproachItems[activeApproach].label}:</span>
@@ -957,7 +1023,7 @@ export default function App() {
       {/* Slide 6: Business Impact */}
       <section 
         ref={(el) => (sectionRefs.current[5] = el)}
-        className="relative min-h-screen bg-black flex flex-col justify-center px-8 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
+        className="relative min-h-screen bg-black flex flex-col justify-center px-4 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
       >
         <div className="relative z-10 max-w-7xl mx-auto w-full flex flex-col gap-16 md:gap-20">
           {/* Top Section: Headline & Subheading */}
@@ -1066,7 +1132,7 @@ export default function App() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="bg-white/5 border border-white/10 p-8 md:p-12 rounded-3xl backdrop-blur-sm"
+            className="bg-white/5 border border-white/10 p-4 md:p-12 rounded-3xl backdrop-blur-sm"
           >
             <p className="text-lg md:text-2xl text-white/90 leading-relaxed text-center max-w-5xl mx-auto">
               <span className="text-brand-yellow font-bold">Tigo Energy Intelligence</span> is used by thousands of solar installers, asset managers, and building owners <span className="text-brand-yellow font-bold">in 100+ countries</span>. The all-in-one commissioning and monitoring platform <span className="text-brand-yellow font-bold">enables module and system-level visibility</span> along with a suite of multi-site management capabilities.
@@ -1077,7 +1143,7 @@ export default function App() {
       {/* Slide 7: The Resolution */}
       <section 
         ref={(el) => (sectionRefs.current[6] = el)}
-        className="relative min-h-screen bg-black flex flex-col justify-center px-8 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
+        className="relative min-h-screen bg-black flex flex-col justify-center px-4 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
       >
         <div className="relative z-10 max-w-7xl mx-auto w-full">
           {/* Top Section: The Resolution */}
@@ -1186,7 +1252,7 @@ export default function App() {
       {/* Slide 8: Scope of Work */}
       <section 
         ref={(el) => (sectionRefs.current[7] = el)}
-        className="relative min-h-screen bg-black flex flex-col justify-center px-8 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
+        className="relative min-h-screen bg-black flex flex-col justify-center px-4 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
       >
         {/* Decorative Image 3 */}
         <motion.div
@@ -1297,7 +1363,7 @@ export default function App() {
       {/* Slide 9: Technology Stack */}
       <section 
         ref={(el) => (sectionRefs.current[8] = el)}
-        className="relative min-h-screen bg-black flex flex-col justify-center px-8 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
+        className="relative min-h-screen bg-black flex flex-col justify-center px-4 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
       >
         <div className="relative z-10 max-w-7xl mx-auto w-full">
           {/* Top Section: Technology Stack */}
@@ -1402,7 +1468,7 @@ export default function App() {
       {/* Slide 10: Predict+ */}
       <section 
         ref={(el) => (sectionRefs.current[9] = el)}
-        className="relative min-h-screen bg-black flex flex-col justify-center px-8 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
+        className="relative min-h-screen bg-black flex flex-col justify-center px-4 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
       >
         {/* Partner Logo - REMOVED, moved to Header */}
 
@@ -1463,7 +1529,7 @@ export default function App() {
       {/* Slide 11: The solutions */}
       <section 
         ref={(el) => (sectionRefs.current[10] = el)}
-        className="relative min-h-screen bg-black flex flex-col justify-center px-8 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
+        className="relative min-h-screen bg-black flex flex-col justify-center px-4 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
       >
         <div className="relative z-10 max-w-7xl mx-auto w-full">
           {/* Header */}
@@ -1546,7 +1612,7 @@ export default function App() {
                           setActiveSolution((prev) => (prev - 1 + solutions.length) % solutions.length);
                         }
                       }}
-                      className="absolute inset-0 bg-white/5 p-8 rounded-2xl border border-white/10 flex flex-col justify-center cursor-grab active:cursor-grabbing"
+                  className="absolute inset-0 bg-white/5 p-3 md:p-8 rounded-2xl border border-white/10 flex flex-col justify-center cursor-grab active:cursor-grabbing"
                     >
                       <h4 className="text-xl font-bold text-brand-yellow mb-3">
                         {solutions[activeSolution].title}
@@ -1585,7 +1651,7 @@ export default function App() {
       {/* Slide 12: Predict+ Business Impact */}
       <section 
         ref={(el) => (sectionRefs.current[11] = el)}
-        className="relative min-h-screen bg-black flex flex-col justify-center px-8 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
+        className="relative min-h-screen bg-black flex flex-col justify-center px-4 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
       >
         {/* Decorative Image 3 */}
         <motion.div
@@ -1662,7 +1728,7 @@ export default function App() {
       {/* Slide 13: Predict+ Scope of work */}
       <section 
         ref={(el) => (sectionRefs.current[12] = el)}
-        className="relative min-h-screen bg-black flex flex-col justify-center px-8 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
+        className="relative min-h-screen bg-black flex flex-col justify-center px-4 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
       >
         <div className="relative z-10 max-w-7xl mx-auto w-full">
           {/* Header */}
@@ -1742,7 +1808,7 @@ export default function App() {
       {/* Slide 14: Technology Stack (Predict+) */}
       <section 
         ref={(el) => (sectionRefs.current[13] = el)}
-        className="relative min-h-screen bg-black flex flex-col justify-center px-8 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
+        className="relative min-h-screen bg-black flex flex-col justify-center px-4 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
       >
         <div className="relative z-10 max-w-7xl mx-auto w-full">
           {/* Top Section: Technology Stack */}
@@ -1832,7 +1898,7 @@ export default function App() {
       {/* Slide 15: Proven Results */}
       <section 
         ref={(el) => (sectionRefs.current[14] = el)}
-        className="relative min-h-screen bg-black flex flex-col justify-center px-8 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
+        className="relative min-h-screen bg-black flex flex-col justify-center px-4 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
       >
         {/* Decorative Image 1 */}
         <motion.div
@@ -2012,7 +2078,7 @@ export default function App() {
       {/* Slide 16: Final Slide */}
       <section 
         ref={(el) => (sectionRefs.current[15] = el)}
-        className="relative min-h-screen bg-black flex flex-col items-center justify-center px-8 lg:px-20 py-24 lg:py-32 border-t border-white/10 overflow-hidden text-center"
+        className="relative min-h-screen bg-black flex flex-col items-center justify-center px-4 lg:px-20 py-24 lg:py-32 border-t border-white/10 overflow-hidden text-center"
       >
         <div className="relative z-10 max-w-6xl mx-auto w-full">
           <motion.div 
@@ -2104,7 +2170,7 @@ export default function App() {
       {/* Email Selection Modal */}
       <AnimatePresence>
         {isEmailModalOpen && (
-          <div className="fixed inset-0 z-[200] flex items-center justify-center px-6">
+          <div className="fixed inset-0 z-[200] flex items-center justify-center px-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -2116,55 +2182,75 @@ export default function App() {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative w-full max-w-md bg-zinc-900 border border-white/10 rounded-3xl p-8 shadow-2xl"
+              className="relative w-full max-w-md bg-[#121212] border border-white/10 rounded-3xl p-6 md:p-8 shadow-2xl"
             >
+              <button 
+                onClick={() => setIsEmailModalOpen(false)}
+                className="absolute top-6 right-6 text-white/40 hover:text-white transition-colors cursor-pointer"
+              >
+                <X size={20} />
+              </button>
+
               <div className="flex flex-col gap-6">
-                <div className="flex flex-col gap-2">
-                  <h3 className="text-2xl font-bold text-white tracking-tight">Choose your email client</h3>
-                  <p className="text-white/40 text-sm">How would you like to contact us?</p>
+                <div className="flex flex-col gap-1">
+                  <h3 className="text-2xl font-bold text-white tracking-tight">Send us an email</h3>
+                  <p className="text-white/40 text-sm">Choose your preferred way to contact us</p>
                 </div>
 
                 <div className="flex flex-col gap-3">
                   {[
                     { 
-                      label: "Default Mail App", 
-                      icon: <Mail size={20} />, 
-                      href: "mailto:info@wamisoftware.com" 
-                    },
-                    { 
-                      label: "Gmail", 
+                      label: "Open in Gmail", 
                       icon: <Globe size={20} />, 
                       href: "https://mail.google.com/mail/?view=cm&fs=1&to=info@wamisoftware.com" 
                     },
                     { 
-                      label: "Outlook", 
-                      icon: <ArrowUpRight size={20} />, 
+                      label: "Open in Outlook", 
+                      icon: <Mail size={20} />, 
                       href: "https://outlook.office.com/mail/deeplink/compose?to=info@wamisoftware.com" 
+                    },
+                    { 
+                      label: "Open in Default App", 
+                      icon: <ExternalLink size={20} />, 
+                      href: "mailto:info@wamisoftware.com" 
+                    },
+                    { 
+                      label: isCopied ? "Email Copied!" : "Copy Email Address", 
+                      icon: isCopied ? <Check size={20} className="text-green-400" /> : <Copy size={20} />, 
+                      action: () => {
+                        navigator.clipboard.writeText("info@wamisoftware.com");
+                        setIsCopied(true);
+                        setTimeout(() => {
+                          setIsCopied(false);
+                          setIsEmailModalOpen(false);
+                        }, 1500);
+                      }
                     }
                   ].map((option, i) => (
-                    <a
-                      key={i}
-                      href={option.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => setIsEmailModalOpen(false)}
-                      className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/20 transition-all duration-200 group cursor-pointer"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="text-brand-yellow">{option.icon}</div>
+                    option.href ? (
+                      <a
+                        key={i}
+                        href={option.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => setIsEmailModalOpen(false)}
+                        className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/20 transition-all duration-200 cursor-pointer"
+                      >
+                        <div className="text-white/60">{option.icon}</div>
                         <span className="text-white font-bold">{option.label}</span>
-                      </div>
-                      <ArrowUpRight size={18} className="text-white/20 group-hover:text-white transition-colors" />
-                    </a>
+                      </a>
+                    ) : (
+                      <button
+                        key={i}
+                        onClick={option.action}
+                        className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/20 transition-all duration-200 cursor-pointer w-full text-left"
+                      >
+                        <div className="text-white/60">{option.icon}</div>
+                        <span className="text-white font-bold">{option.label}</span>
+                      </button>
+                    )
                   ))}
                 </div>
-
-                <button
-                  onClick={() => setIsEmailModalOpen(false)}
-                  className="w-full py-4 text-white/40 hover:text-white text-sm font-bold uppercase tracking-widest transition-colors cursor-pointer"
-                >
-                  Cancel
-                </button>
               </div>
             </motion.div>
           </div>
