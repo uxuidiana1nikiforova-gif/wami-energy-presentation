@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, animate } from "motion/react";
 import { Truck, Monitor, Timer, ThumbsUp, ChevronUp, ChevronDown, Mail, Globe, Linkedin, Calendar, ArrowUpRight, Copy, ExternalLink, X, Check } from "lucide-react";
 
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
@@ -101,6 +101,44 @@ export default function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
+
+  const RollingNumber = ({ value }: { value: string }) => {
+    const characters = value.split("");
+    const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    
+    return (
+      <div className="flex overflow-hidden">
+        {characters.map((char, i) => {
+          const digit = parseInt(char);
+          if (isNaN(digit)) {
+            return <span key={i}>{char}</span>;
+          }
+          
+          return (
+            <div key={i} className="relative h-[1em] overflow-hidden">
+              <motion.div
+                initial={{ y: "0%" }}
+                whileInView={{ y: `-${digit * 10}%` }}
+                transition={{ 
+                  duration: 2.4, 
+                  ease: [0.16, 1, 0.3, 1],
+                  delay: i * 0.1,
+                  repeat: Infinity,
+                  repeatDelay: 12,
+                  repeatType: "loop"
+                }}
+                className="flex flex-col"
+              >
+                {numbers.map((num) => (
+                  <span key={num} className="leading-none">{num}</span>
+                ))}
+              </motion.div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
 
   const navItems = [
     { label: "Who we are", index: 1 },
@@ -233,7 +271,7 @@ export default function App() {
     <div className="min-h-screen bg-black overflow-x-hidden selection:bg-brand-yellow selection:text-black">
       {/* Top Header Navigation */}
       <header className="fixed top-0 left-0 right-0 z-[100] bg-black/60 backdrop-blur-xl border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-4 lg:px-12 h-20 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-12 h-20 flex items-center justify-between">
           {/* Wami Logo (Left) */}
           <button onClick={scrollToTop} className="hover:opacity-80 transition-opacity cursor-pointer">
             <img 
@@ -439,16 +477,31 @@ export default function App() {
                 </div>
                 
                 {/* Mobile Menu Footer */}
-                <div className="p-4 bg-white/5 border-t border-white/10 flex items-center justify-between">
+                <div className="p-6 bg-white/5 border-t border-white/10 flex items-center justify-between">
                   <img 
-                    src="/images/logo_tigo.svg" 
-                    alt="Tigo" 
-                    className="h-4 w-auto opacity-50"
+                    src="/images/logo_wami.svg" 
+                    alt="Wami Software" 
+                    className="h-5 w-auto opacity-50"
                     referrerPolicy="no-referrer"
                   />
-                  <div className="flex gap-4">
-                    <Linkedin size={18} className="text-white/40" />
-                    <Globe size={18} className="text-white/40" />
+                  <div className="flex gap-6">
+                    <a 
+                      href="https://www.linkedin.com/company/wamisoftware" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-white/40 hover:text-brand-yellow transition-colors"
+                    >
+                      <Linkedin size={20} />
+                    </a>
+                    <button 
+                      onClick={() => {
+                        setIsEmailModalOpen(true);
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="text-white/40 hover:text-brand-yellow transition-colors cursor-pointer"
+                    >
+                      <Mail size={20} />
+                    </button>
                   </div>
                 </div>
               </motion.div>
@@ -476,7 +529,7 @@ export default function App() {
       {/* Slide 1: Hero Section */}
       <section 
         ref={(el) => (sectionRefs.current[0] = el)}
-        className="relative min-h-screen flex flex-col items-start lg:items-center justify-center px-4 lg:px-20 py-32 lg:py-48 text-left lg:text-center overflow-hidden"
+        className="relative min-h-screen flex flex-col items-start lg:items-center justify-center px-4 md:px-6 lg:px-20 py-32 lg:py-48 text-left lg:text-center overflow-hidden"
       >
         {/* Main Content */}
         <motion.div 
@@ -533,7 +586,7 @@ export default function App() {
         </motion.div>
 
         {/* Hero Image at Bottom with Smooth Scaling Animation */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[140%] pointer-events-none z-0 flex flex-col items-center origin-bottom">
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[280%] md:w-[140%] pointer-events-none z-0 flex flex-col items-center origin-bottom">
           <motion.img 
             src="/images/image_hero.svg" 
             alt="Hero Decoration" 
@@ -555,7 +608,7 @@ export default function App() {
       {/* Slide 2: Who We Are */}
       <section 
         ref={(el) => (sectionRefs.current[1] = el)}
-        className="relative min-h-screen bg-black flex flex-col justify-center px-4 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
+        className="relative min-h-screen bg-black flex flex-col justify-center px-4 md:px-6 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
       >
         {/* Top Header Section */}
         <div className="relative z-10 max-w-7xl mx-auto w-full">
@@ -632,7 +685,9 @@ export default function App() {
               <div className="hidden sm:grid grid-cols-2 gap-y-10 gap-x-6">
                 {stats.map((stat, i) => (
                   <div key={i} className="flex flex-col">
-                    <span className="text-5xl font-black text-brand-yellow leading-none mb-1">{stat.value}</span>
+                    <span className="text-5xl font-black text-brand-yellow leading-none mb-1">
+                      <RollingNumber value={stat.value} />
+                    </span>
                     <p className="text-xs md:text-sm uppercase tracking-widest leading-tight">
                       <span className="text-white">{stat.label1}</span> <br />
                       <span className="text-brand-yellow">{stat.label2}</span>
@@ -666,7 +721,9 @@ export default function App() {
                     >
                       {stats.slice(activeWhoWeAre * 2, (activeWhoWeAre + 1) * 2).map((stat, i) => (
                         <div key={i} className="flex flex-col">
-                          <span className="text-4xl font-black text-brand-yellow leading-none mb-1">{stat.value}</span>
+                          <span className="text-4xl font-black text-brand-yellow leading-none mb-1">
+                            <RollingNumber value={stat.value} />
+                          </span>
                           <p className="text-[10px] uppercase tracking-widest leading-tight">
                             <span className="text-white">{stat.label1}</span> <br />
                             <span className="text-brand-yellow">{stat.label2}</span>
@@ -696,7 +753,7 @@ export default function App() {
         </div>
 
         {/* Double Spirograph Graphic - Mobile Only (at the bottom) */}
-        <div className="lg:hidden relative w-full aspect-square max-w-[300px] mx-auto mt-12 flex items-center justify-center overflow-hidden">
+        <div className="lg:hidden relative w-full aspect-square max-w-[600px] mx-auto mt-12 flex items-center justify-center overflow-hidden">
           {/* Layer 1: Outer/Base rotation */}
           <motion.img 
             src="/images/image_section2.svg"
@@ -725,7 +782,7 @@ export default function App() {
       {/* Slide 3: Expertise */}
       <section 
         ref={(el) => (sectionRefs.current[2] = el)}
-        className="relative min-h-screen bg-black flex flex-col justify-center px-4 lg:px-20 py-20 border-t border-white/10"
+        className="relative min-h-screen bg-black flex flex-col justify-center px-4 md:px-6 lg:px-20 py-20 border-t border-white/10"
       >
         {/* Top Header Section */}
         <div className="relative z-10 max-w-7xl mx-auto w-full">
@@ -819,7 +876,7 @@ export default function App() {
     </section>
       <section 
         ref={(el) => (sectionRefs.current[3] = el)}
-        className="relative min-h-screen bg-black flex flex-col justify-center px-4 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
+        className="relative min-h-screen bg-black flex flex-col justify-center px-4 md:px-6 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
       >
         {/* Partner Logo - REMOVED, moved to Header */}
 
@@ -867,7 +924,7 @@ export default function App() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
-            className="flex flex-col gap-6 max-w-3xl"
+            className="flex flex-col gap-6 max-w-3xl md:max-w-[55%]"
           >
             <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium tracking-tight">
               <span className="text-brand-yellow">The</span> <span className="text-white">mission</span>
@@ -883,7 +940,7 @@ export default function App() {
       {/* Slide 5: The Challenge & Strategic Approach */}
       <section 
         ref={(el) => (sectionRefs.current[4] = el)}
-        className="relative min-h-screen bg-black flex flex-col justify-center px-4 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
+        className="relative min-h-screen bg-black flex flex-col justify-center px-4 md:px-6 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
       >
         {/* Decorative Image 2 */}
         <motion.div
@@ -1023,7 +1080,7 @@ export default function App() {
       {/* Slide 6: Business Impact */}
       <section 
         ref={(el) => (sectionRefs.current[5] = el)}
-        className="relative min-h-screen bg-black flex flex-col justify-center px-4 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
+        className="relative min-h-screen bg-black flex flex-col justify-center px-4 md:px-6 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
       >
         <div className="relative z-10 max-w-7xl mx-auto w-full flex flex-col gap-16 md:gap-20">
           {/* Top Section: Headline & Subheading */}
@@ -1143,7 +1200,7 @@ export default function App() {
       {/* Slide 7: The Resolution */}
       <section 
         ref={(el) => (sectionRefs.current[6] = el)}
-        className="relative min-h-screen bg-black flex flex-col justify-center px-4 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
+        className="relative min-h-screen bg-black flex flex-col justify-center px-4 md:px-6 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
       >
         <div className="relative z-10 max-w-7xl mx-auto w-full">
           {/* Top Section: The Resolution */}
@@ -1252,7 +1309,7 @@ export default function App() {
       {/* Slide 8: Scope of Work */}
       <section 
         ref={(el) => (sectionRefs.current[7] = el)}
-        className="relative min-h-screen bg-black flex flex-col justify-center px-4 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
+        className="relative min-h-screen bg-black flex flex-col justify-center px-4 md:px-6 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
       >
         {/* Decorative Image 3 */}
         <motion.div
@@ -1363,7 +1420,7 @@ export default function App() {
       {/* Slide 9: Technology Stack */}
       <section 
         ref={(el) => (sectionRefs.current[8] = el)}
-        className="relative min-h-screen bg-black flex flex-col justify-center px-4 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
+        className="relative min-h-screen bg-black flex flex-col justify-center px-4 md:px-6 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
       >
         <div className="relative z-10 max-w-7xl mx-auto w-full">
           {/* Top Section: Technology Stack */}
@@ -1468,7 +1525,7 @@ export default function App() {
       {/* Slide 10: Predict+ */}
       <section 
         ref={(el) => (sectionRefs.current[9] = el)}
-        className="relative min-h-screen bg-black flex flex-col justify-center px-4 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
+        className="relative min-h-screen bg-black flex flex-col justify-center px-4 md:px-6 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
       >
         {/* Partner Logo - REMOVED, moved to Header */}
 
@@ -1529,7 +1586,7 @@ export default function App() {
       {/* Slide 11: The solutions */}
       <section 
         ref={(el) => (sectionRefs.current[10] = el)}
-        className="relative min-h-screen bg-black flex flex-col justify-center px-4 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
+        className="relative min-h-screen bg-black flex flex-col justify-center px-4 md:px-6 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
       >
         <div className="relative z-10 max-w-7xl mx-auto w-full">
           {/* Header */}
@@ -1651,7 +1708,7 @@ export default function App() {
       {/* Slide 12: Predict+ Business Impact */}
       <section 
         ref={(el) => (sectionRefs.current[11] = el)}
-        className="relative min-h-screen bg-black flex flex-col justify-center px-4 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
+        className="relative min-h-screen bg-black flex flex-col justify-center px-4 md:px-6 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
       >
         {/* Decorative Image 3 */}
         <motion.div
@@ -1702,7 +1759,7 @@ export default function App() {
             </motion.div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-4 lg:gap-8">
             {[
               { title: "98.5%", label: "Forecast Accuracy", desc: "Industry-leading precision for grid demand prediction." },
               { title: "100+", label: "Countries", desc: "Global deployment supporting diverse energy markets." },
@@ -1728,7 +1785,7 @@ export default function App() {
       {/* Slide 13: Predict+ Scope of work */}
       <section 
         ref={(el) => (sectionRefs.current[12] = el)}
-        className="relative min-h-screen bg-black flex flex-col justify-center px-4 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
+        className="relative min-h-screen bg-black flex flex-col justify-center px-4 md:px-6 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
       >
         <div className="relative z-10 max-w-7xl mx-auto w-full">
           {/* Header */}
@@ -1808,7 +1865,7 @@ export default function App() {
       {/* Slide 14: Technology Stack (Predict+) */}
       <section 
         ref={(el) => (sectionRefs.current[13] = el)}
-        className="relative min-h-screen bg-black flex flex-col justify-center px-4 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
+        className="relative min-h-screen bg-black flex flex-col justify-center px-4 md:px-6 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
       >
         <div className="relative z-10 max-w-7xl mx-auto w-full">
           {/* Top Section: Technology Stack */}
@@ -1898,7 +1955,7 @@ export default function App() {
       {/* Slide 15: Proven Results */}
       <section 
         ref={(el) => (sectionRefs.current[14] = el)}
-        className="relative min-h-screen bg-black flex flex-col justify-center px-4 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
+        className="relative min-h-screen bg-black flex flex-col justify-center px-4 md:px-6 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
       >
         {/* Decorative Image 1 */}
         <motion.div
@@ -1963,9 +2020,16 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row items-center justify-start gap-16">
+              <div className="flex flex-col sm:flex-row items-center sm:justify-center lg:justify-start gap-16">
                 {/* Typical Teams Chart */}
-                <div className="flex flex-col items-center gap-8">
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
+                  whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
+                  viewport={{ once: false }}
+                  transition={{ duration: 0.8, ease: "easeOut" }}
+                  key={`typical-${currentSlide === 15}`}
+                  className="flex flex-col items-center gap-8"
+                >
                   <div className="w-[200px] h-[200px] relative">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
@@ -1979,6 +2043,8 @@ export default function App() {
                           startAngle={90}
                           endAngle={450}
                           cornerRadius={4}
+                          animationDuration={1500}
+                          animationBegin={0}
                         >
                           {TYPICAL_TEAM_DATA.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={entry.color} />
@@ -1989,29 +2055,51 @@ export default function App() {
                     {/* Labels with lines (simulated with absolute positioning to match mockup) */}
                     <div className="absolute inset-0 pointer-events-none">
                       {/* 50% Label (Senior - Yellow) - Positioned on the left where the 50% segment is */}
-                      <div className="absolute top-1/2 left-[-20%] -translate-y-1/2 flex items-center">
+                      <motion.div 
+                        initial={{ opacity: 0, x: -10 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.8 }}
+                        className="absolute top-1/2 left-[-20%] -translate-y-1/2 flex items-center"
+                      >
                         <span className="text-brand-yellow font-bold text-lg">50%</span>
                         <div className="w-6 h-[1px] bg-brand-yellow/50 ml-2" />
-                      </div>
+                      </motion.div>
                       {/* 10% Label (Middle - Pink) - Positioned near the bottom-right segment */}
-                      <div className="absolute bottom-[5%] right-[10%] flex items-center">
+                      <motion.div 
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 1 }}
+                        className="absolute bottom-[5%] right-[10%] flex items-center"
+                      >
                         <div className="w-6 h-[1px] bg-[#FF69B4]/50 mr-2" />
                         <span className="text-[#FF69B4] font-bold text-lg">10%</span>
-                      </div>
+                      </motion.div>
                       {/* 40% Label (Junior - Green) - Positioned near the top-right segment */}
-                      <div className="absolute top-[15%] right-[-10%] flex items-center">
+                      <motion.div 
+                        initial={{ opacity: 0, y: -10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 1.2 }}
+                        className="absolute top-[15%] right-[-10%] flex items-center"
+                      >
                         <div className="w-6 h-[1px] bg-[#4ADE80]/50 mr-2" />
                         <span className="text-[#4ADE80] font-bold text-lg">40%</span>
-                      </div>
+                      </motion.div>
                     </div>
                   </div>
                   <p className="text-2xl font-bold">
                     <span className="text-white">Typical</span> <span className="text-brand-yellow">teams</span>
                   </p>
-                </div>
+                </motion.div>
 
                 {/* WAMI Teams Chart */}
-                <div className="flex flex-col items-center gap-8">
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.8, rotate: 10 }}
+                  whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
+                  viewport={{ once: false }}
+                  transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+                  key={`wami-${currentSlide === 15}`}
+                  className="flex flex-col items-center gap-8"
+                >
                   <div className="w-[200px] h-[200px] relative">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
@@ -2025,6 +2113,8 @@ export default function App() {
                           startAngle={90}
                           endAngle={450}
                           cornerRadius={4}
+                          animationDuration={1500}
+                          animationBegin={300}
                         >
                           {WAMI_TEAM_DATA.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={entry.color} />
@@ -2035,21 +2125,31 @@ export default function App() {
                     {/* Labels for WAMI */}
                     <div className="absolute inset-0 pointer-events-none">
                       {/* 99% Label (Senior - Yellow) - Positioned on the left where the dominant 99% segment is */}
-                      <div className="absolute top-1/2 left-[-20%] -translate-y-1/2 flex items-center">
+                      <motion.div 
+                        initial={{ opacity: 0, x: -10 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 1.1 }}
+                        className="absolute top-1/2 left-[-20%] -translate-y-1/2 flex items-center"
+                      >
                         <span className="text-brand-yellow font-bold text-lg">99%</span>
                         <div className="w-6 h-[1px] bg-brand-yellow/50 ml-2" />
-                      </div>
+                      </motion.div>
                       {/* 1% Label (Middle - Pink) - Positioned near the top-right sliver */}
-                      <div className="absolute top-[5%] right-[5%] flex items-center">
+                      <motion.div 
+                        initial={{ opacity: 0, y: -10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 1.3 }}
+                        className="absolute top-[5%] right-[5%] flex items-center"
+                      >
                         <div className="w-6 h-[1px] bg-[#FF69B4]/50 mr-2" />
                         <span className="text-[#FF69B4] font-bold text-lg">1%</span>
-                      </div>
+                      </motion.div>
                     </div>
                   </div>
                   <p className="text-2xl font-bold">
                     <span className="text-brand-yellow">WAMI</span> <span className="text-white">teams</span>
                   </p>
-                </div>
+                </motion.div>
               </div>
             </div>
 
@@ -2057,20 +2157,32 @@ export default function App() {
             <div className="hidden lg:block w-[1px] h-full bg-white/20 self-stretch" />
 
             {/* Right Column: Stats */}
-            <div className="flex flex-col justify-center gap-24 lg:pl-12 relative">
+            <div className="flex flex-col justify-center gap-6 lg:gap-24 lg:pl-12 relative w-full md:w-full md:items-center lg:mx-0 lg:w-auto">
               {/* Stat 1 */}
-              <div className="flex flex-col items-center text-center w-fit mx-auto">
+              <motion.div 
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false }}
+                transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
+                key={`stat1-${currentSlide === 15}`}
+                className="flex flex-col items-center justify-center text-center w-full md:flex-1 lg:w-fit p-8 lg:p-0 bg-white/5 lg:bg-transparent border border-white/10 lg:border-none rounded-3xl lg:rounded-none backdrop-blur-sm lg:backdrop-blur-none"
+              >
                 <span className="text-5xl md:text-6xl font-black text-brand-yellow leading-none mb-4 whitespace-nowrap">98.5%</span>
-                <p className="text-xl md:text-2xl text-white font-medium tracking-tight whitespace-nowrap">Forecasting accuracy</p>
-              </div>
+                <p className="text-lg md:text-2xl text-white font-medium tracking-tight lg:whitespace-nowrap">Forecasting accuracy</p>
+              </motion.div>
 
               {/* Stat 2 */}
-              <div className="flex flex-col items-center text-center w-fit mx-auto">
+              <motion.div 
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false }}
+                transition={{ duration: 0.8, delay: 0.7, ease: "easeOut" }}
+                key={`stat2-${currentSlide === 15}`}
+                className="flex flex-col items-center text-center w-full lg:w-fit p-8 lg:p-0 bg-white/5 lg:bg-transparent border border-white/10 lg:border-none rounded-3xl lg:rounded-none backdrop-blur-sm lg:backdrop-blur-none"
+              >
                 <span className="text-5xl md:text-6xl font-black text-brand-yellow leading-none mb-4 whitespace-nowrap">1 000 000+</span>
-                <p className="text-xl md:text-2xl text-white font-medium tracking-tight whitespace-nowrap">Data points processed daily</p>
-              </div>
-
-              {/* Decorative Glowing Swirl - REMOVED */}
+                <p className="text-lg md:text-2xl text-white font-medium tracking-tight lg:whitespace-nowrap">Data points processed daily</p>
+              </motion.div>
             </div>
           </div>
         </div>
@@ -2078,7 +2190,7 @@ export default function App() {
       {/* Slide 16: Final Slide */}
       <section 
         ref={(el) => (sectionRefs.current[15] = el)}
-        className="relative min-h-screen bg-black flex flex-col items-center justify-center px-4 lg:px-20 py-24 lg:py-32 border-t border-white/10 overflow-hidden text-center"
+        className="relative min-h-screen bg-black flex flex-col items-center justify-center px-4 md:px-6 lg:px-20 py-24 lg:py-32 border-t border-white/10 overflow-hidden text-center"
       >
         <div className="relative z-10 max-w-6xl mx-auto w-full">
           <motion.div 
