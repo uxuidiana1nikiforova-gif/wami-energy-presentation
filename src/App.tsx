@@ -516,27 +516,6 @@ export default function App() {
         ref={(el) => (sectionRefs.current[1] = el)}
         className="relative min-h-screen bg-black flex flex-col justify-center px-8 lg:px-20 py-20 border-t border-white/10 overflow-hidden"
       >
-        {/* Decorative Image 1 */}
-        <motion.div
-          animate={{ 
-            y: [0, -20, 0],
-            rotate: [0, 5, 0]
-          }}
-          transition={{ 
-            duration: 6, 
-            repeat: Infinity, 
-            ease: "easeInOut" 
-          }}
-          className="absolute -top-20 -right-20 w-[400px] h-[400px] opacity-20 pointer-events-none z-0"
-        >
-          <img 
-            src="/images/image1.svg" 
-            alt="Decoration 1" 
-            className="w-full h-full object-contain"
-            referrerPolicy="no-referrer"
-          />
-        </motion.div>
-
         {/* Top Header Section */}
         <div className="relative z-10 max-w-7xl mx-auto w-full">
           <div className="flex flex-col md:flex-row md:items-start justify-between mb-8 gap-4 overflow-hidden">
