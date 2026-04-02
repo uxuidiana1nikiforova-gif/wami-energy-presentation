@@ -2157,7 +2157,7 @@ export default function App() {
             <div className="hidden lg:block w-[1px] h-full bg-white/20 self-stretch" />
 
             {/* Right Column: Stats */}
-            <div className="flex flex-col justify-center gap-6 lg:gap-24 lg:pl-12 relative w-full md:w-full md:items-center lg:mx-0 lg:w-auto">
+            <div className="flex flex-col justify-center gap-6 lg:gap-24 lg:pl-12 relative w-full md:w-fit md:mx-auto md:items-stretch lg:mx-0 lg:w-auto">
               {/* Stat 1 */}
               <motion.div 
                 initial={{ opacity: 0, y: 30 }}
@@ -2165,7 +2165,7 @@ export default function App() {
                 viewport={{ once: false }}
                 transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
                 key={`stat1-${currentSlide === 15}`}
-                className="flex flex-col items-center justify-center text-center w-full md:flex-1 lg:w-fit p-8 lg:p-0 bg-white/5 lg:bg-transparent border border-white/10 lg:border-none rounded-3xl lg:rounded-none backdrop-blur-sm lg:backdrop-blur-none"
+                className="flex flex-col items-center justify-center text-center w-full lg:w-fit p-8 lg:p-0 bg-white/5 lg:bg-transparent border border-white/10 lg:border-none rounded-3xl lg:rounded-none backdrop-blur-sm lg:backdrop-blur-none"
               >
                 <span className="text-5xl md:text-6xl font-black text-brand-yellow leading-none mb-4 whitespace-nowrap">98.5%</span>
                 <p className="text-lg md:text-2xl text-white font-medium tracking-tight lg:whitespace-nowrap">Forecasting accuracy</p>
