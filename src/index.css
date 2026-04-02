@@ -1,0 +1,37 @@
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-brand-yellow: #FBF950;
+  --font-sans: "Satoshi", ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  @apply bg-black text-white font-sans;
+}
+
+h1 {
+  @apply font-black uppercase leading-tight;
+}
+
+h2 {
+  @apply font-medium uppercase tracking-wider;
+}
+
+.text-outline {
+  -webkit-text-stroke: 1px #FBF950;
+  color: transparent;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+button, a, [role="button"], .cursor-pointer {
+  cursor: pointer !important;
+}
