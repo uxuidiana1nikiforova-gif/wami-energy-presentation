@@ -5,9 +5,10 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, animate } from "motion/react";
-import { Truck, Monitor, Timer, ThumbsUp, ChevronUp, ChevronDown, Mail, Globe, Linkedin, Calendar, ArrowUpRight, Copy, ExternalLink, X, Check } from "lucide-react";
+import { Truck, Monitor, Timer, ThumbsUp, ChevronUp, ChevronDown, Mail, Globe, Linkedin, Calendar, ArrowUpRight, Copy, ExternalLink, X, Check, Languages } from "lucide-react";
 
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
+import { translations } from "./translations";
 
 const TYPICAL_TEAM_DATA = [
   { name: "Senior", value: 50, color: "#FBF950" },
@@ -21,6 +22,8 @@ const WAMI_TEAM_DATA = [
 ];
 
 export default function App() {
+  const [language, setLanguage] = useState<"en" | "de">("en");
+  const t = translations[language];
   const [currentSlide, setCurrentSlide] = useState(1);
   const totalSlides = 16;
   const sectionRefs = useRef<(HTMLElement | null)[]>([]);
@@ -141,58 +144,41 @@ export default function App() {
   };
 
   const navItems = [
-    { label: "Who we are", index: 1 },
-    { label: "Expertise", index: 2 },
+    { label: t.nav.whoWeAre, index: 1 },
+    { label: t.nav.expertise, index: 2 },
     { 
-      label: "Energy Intelligence", 
+      label: t.nav.energyIntelligence, 
       items: [
-        { label: "Overview", index: 3 },
-        { label: "Approach", index: 4 },
-        { label: "Impact", index: 5 },
-        { label: "Resolution", index: 6 },
-        { label: "Scope", index: 7 },
-        { label: "Tech Stack", index: 8 }
+        { label: t.nav.overview, index: 3 },
+        { label: t.nav.approach, index: 4 },
+        { label: t.nav.impact, index: 5 },
+        { label: t.nav.resolution, index: 6 },
+        { label: t.nav.scope, index: 7 },
+        { label: t.nav.techStack, index: 8 }
       ]
     },
     { 
-      label: "Predict+", 
+      label: t.nav.predictPlus, 
       items: [
-        { label: "Overview", index: 9 },
-        { label: "Solutions", index: 10 },
-        { label: "Impact", index: 11 },
-        { label: "Scope", index: 12 },
-        { label: "Tech Stack", index: 13 }
+        { label: t.nav.overview, index: 9 },
+        { label: t.nav.solutions, index: 10 },
+        { label: t.nav.impact, index: 11 },
+        { label: t.nav.scope, index: 12 },
+        { label: t.nav.techStack, index: 13 }
       ]
     },
-    { label: "Results", index: 14 },
-    { label: "Contacts", index: 15 }
+    { label: t.nav.results, index: 14 },
+    { label: t.nav.contacts, index: 15 }
   ];
 
   const stats = [
-    { value: "12", label1: "years", label2: "on the market" },
-    { value: "55+", label1: "successfully", label2: "delivered projects" },
-    { value: "8", label1: "years", label2: "in energy" },
-    { value: "6", label1: "years average", label2: "developer's experience" }
+    { value: "12", label1: t.whoWeAre.stats[0].label1, label2: t.whoWeAre.stats[0].label2 },
+    { value: "55+", label1: t.whoWeAre.stats[1].label1, label2: t.whoWeAre.stats[1].label2 },
+    { value: "8", label1: t.whoWeAre.stats[2].label1, label2: t.whoWeAre.stats[2].label2 },
+    { value: "6", label1: t.whoWeAre.stats[3].label1, label2: t.whoWeAre.stats[3].label2 }
   ];
 
-  const solutions = [
-    { 
-      title: "Predict", 
-      desc: "Provides the most accurate, scalable, robust forecast in the industry. Augments individual smart meter data with external sources to accurately forecast grid consumption." 
-    },
-    { 
-      title: "Customer Insights", 
-      desc: "Create data-driven sales offerings for customers based on customer-specific load analysis and forecasting." 
-    },
-    { 
-      title: "Market Insights", 
-      desc: "Improve energy trading decision-making with AI-generated market demand and renewable energy insights." 
-    },
-    { 
-      title: "Profit Analysis", 
-      desc: "Accurately calculate the predicted and actual revenues from end-customers and directly link it to billing systems via API." 
-    }
-  ];
+  const solutions = t.solutions.items;
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -349,6 +335,22 @@ export default function App() {
                 </button>
               );
             })}
+            
+            {/* Language Switcher */}
+            <div className="ml-4 flex items-center bg-white/5 rounded-full p-1 border border-white/10">
+              <button 
+                onClick={() => setLanguage("en")}
+                className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${language === "en" ? "bg-brand-yellow text-black" : "text-white/40 hover:text-white"}`}
+              >
+                EN
+              </button>
+              <button 
+                onClick={() => setLanguage("de")}
+                className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${language === "de" ? "bg-brand-yellow text-black" : "text-white/40 hover:text-white"}`}
+              >
+                DE
+              </button>
+            </div>
           </nav>
 
           {/* Right Side: Tigo Logo & Mobile Menu */}
@@ -362,6 +364,21 @@ export default function App() {
             
             {/* Mobile Menu Toggle */}
             <div className="lg:hidden flex items-center gap-4">
+               {/* Mobile Language Switcher */}
+               <div className="flex items-center bg-white/5 rounded-full p-1 border border-white/10 mr-2">
+                <button 
+                  onClick={() => setLanguage("en")}
+                  className={`px-2 py-1 rounded-full text-[10px] font-bold transition-all ${language === "en" ? "bg-brand-yellow text-black" : "text-white/40"}`}
+                >
+                  EN
+                </button>
+                <button 
+                  onClick={() => setLanguage("de")}
+                  className={`px-2 py-1 rounded-full text-[10px] font-bold transition-all ${language === "de" ? "bg-brand-yellow text-black" : "text-white/40"}`}
+                >
+                  DE
+                </button>
+              </div>
                <span className="text-brand-yellow font-mono text-xl font-black">
                  {(currentSlide).toString().padStart(2, '0')}
                </span>
@@ -545,7 +562,7 @@ export default function App() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-brand-yellow inline-block"
             >
-              THE AI-DRIVEN
+              {t.hero.aiDriven}
             </motion.span>{" "}
             <motion.span 
               initial={{ opacity: 0, x: 20 }}
@@ -553,7 +570,7 @@ export default function App() {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="text-white inline-block"
             >
-              ENERGY
+              {t.hero.energy}
             </motion.span>
             <br />
             <motion.span 
@@ -562,7 +579,7 @@ export default function App() {
               transition={{ duration: 0.8, delay: 0.6 }}
               className="text-white inline-block"
             >
-              REVOLUTION
+              {t.hero.revolution}
             </motion.span>{" "}
             <motion.span 
               initial={{ opacity: 0, scale: 0.9 }}
@@ -570,7 +587,7 @@ export default function App() {
               transition={{ duration: 0.8, delay: 0.8 }}
               className="text-brand-yellow inline-block"
             >
-              BY WAMI
+              {t.hero.byWami}
             </motion.span>
           </h1>
           
@@ -580,8 +597,8 @@ export default function App() {
             transition={{ delay: 1.2, duration: 0.8 }}
             className="text-xl md:text-3xl lg:text-4xl"
           >
-            <span className="text-brand-yellow">WEB AND MOBILE</span>{" "}
-            <span className="text-white">SOFTWARE DEVELOPMENT</span>
+            <span className="text-brand-yellow">{t.hero.subtitle1}</span>{" "}
+            <span className="text-white">{t.hero.subtitle2}</span>
           </motion.h2>
         </motion.div>
 
@@ -620,7 +637,7 @@ export default function App() {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-outline tracking-tighter leading-none uppercase"
           >
-            WHO WE ARE
+            {t.whoWeAre.title}
           </motion.h2>
           <motion.div 
             initial={{ opacity: 0, x: 50 }}
@@ -630,8 +647,8 @@ export default function App() {
             className="md:text-left max-w-md"
           >
             <p className="text-xl md:text-2xl text-white font-medium leading-tight">
-              Focused on building long-term <br />
-              <span className="text-brand-yellow italic">technology partnerships</span>
+              {t.whoWeAre.partnership.white} <br />
+              <span className="text-brand-yellow italic">{t.whoWeAre.partnership.yellow}</span>
             </p>
           </motion.div>
         </div>
@@ -644,7 +661,7 @@ export default function App() {
           {/* Left Column */}
           <div className="flex flex-col gap-12">
             <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white leading-tight">
-              We Always Make <span className="text-brand-yellow">Innovation</span>
+              {t.whoWeAre.innovation.white} <span className="text-brand-yellow">{t.whoWeAre.innovation.yellow}</span>
             </h3>
             
             {/* Double Spirograph Graphic - Desktop Only */}
@@ -676,14 +693,14 @@ export default function App() {
           {/* Right Column */}
           <div className="flex flex-col gap-12">
             <p className="text-base md:text-lg text-white/70 leading-relaxed max-w-lg">
-              Wamisoftware has been operating since 2014, founded with the goal of building a team driven by responsibility, growth, and modern technologies — a true professional family.
+              {t.whoWeAre.description}
             </p>
 
             {/* Stats Grid / Mobile Carousel */}
             <div className="relative">
               {/* Desktop Grid */}
               <div className="hidden sm:grid grid-cols-2 gap-y-10 gap-x-6">
-                {stats.map((stat, i) => (
+                {t.whoWeAre.stats.map((stat, i) => (
                   <div key={i} className="flex flex-col">
                     <span className="text-5xl font-black text-brand-yellow leading-none mb-1">
                       <RollingNumber value={stat.value} />
@@ -719,7 +736,7 @@ export default function App() {
                       }}
                       className="w-full grid grid-cols-2 gap-x-4 cursor-grab active:cursor-grabbing"
                     >
-                      {stats.slice(activeWhoWeAre * 2, (activeWhoWeAre + 1) * 2).map((stat, i) => (
+                      {t.whoWeAre.stats.slice(activeWhoWeAre * 2, (activeWhoWeAre + 1) * 2).map((stat, i) => (
                         <div key={i} className="flex flex-col">
                           <span className="text-4xl font-black text-brand-yellow leading-none mb-1">
                             <RollingNumber value={stat.value} />
@@ -788,12 +805,12 @@ export default function App() {
         <div className="relative z-10 max-w-7xl mx-auto w-full">
           <div className="flex flex-col md:flex-row md:items-start justify-between mb-12 gap-6 relative z-10">
           <h2 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-outline tracking-tighter leading-none uppercase">
-            EXPERTISE
+            {t.expertise.title}
           </h2>
           <div className="md:text-left max-w-md">
             <p className="text-xl md:text-2xl text-white font-medium leading-tight">
-              Optimizing energy systems with AI <br />
-              <span className="text-brand-yellow italic">You Can Trust</span>
+              {t.expertise.trust.white} <br />
+              <span className="text-brand-yellow italic">{t.expertise.trust.yellow}</span>
             </p>
           </div>
         </div>
@@ -805,7 +822,7 @@ export default function App() {
         <div className="relative z-10">
           {/* Desktop Grid */}
           <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-6">
-            {expertiseItems.map((item, index) => (
+            {t.expertise.items.map((item, index) => (
               <motion.div 
                 key={index}
                 initial={{ opacity: 0, y: 30 }}
@@ -840,18 +857,18 @@ export default function App() {
                   onDragEnd={(_, info) => {
                     const swipeThreshold = 50;
                     if (info.offset.x < -swipeThreshold) {
-                      setActiveExpertise((prev) => (prev + 1) % expertiseItems.length);
+                      setActiveExpertise((prev) => (prev + 1) % t.expertise.items.length);
                     } else if (info.offset.x > swipeThreshold) {
-                      setActiveExpertise((prev) => (prev - 1 + expertiseItems.length) % expertiseItems.length);
+                      setActiveExpertise((prev) => (prev - 1 + t.expertise.items.length) % t.expertise.items.length);
                     }
                   }}
                   className="w-full bg-white/5 p-6 rounded-2xl border border-white/10 min-h-[200px] flex flex-col justify-center cursor-grab active:cursor-grabbing"
                 >
                   <h4 className="text-xl font-bold text-brand-yellow mb-3">
-                    {expertiseItems[activeExpertise].title}
+                    {t.expertise.items[activeExpertise].title}
                   </h4>
                   <p className="text-white/70 text-sm leading-relaxed">
-                    {expertiseItems[activeExpertise].desc}
+                    {t.expertise.items[activeExpertise].desc}
                   </p>
                 </motion.div>
               </AnimatePresence>
@@ -859,7 +876,7 @@ export default function App() {
             
             {/* Carousel Indicators */}
             <div className="flex justify-center gap-3 mt-8">
-              {expertiseItems.map((_, i) => (
+              {t.expertise.items.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setActiveExpertise(i)}
@@ -910,10 +927,10 @@ export default function App() {
               className="flex flex-col gap-3"
             >
               <p className="text-xl md:text-2xl lg:text-3xl text-white font-medium tracking-tight">
-                Fast Data, Flexible Processes & Energy Efficiency
+                {t.energyIntelligence.subtitle1}
               </p>
               <p className="text-lg md:text-xl lg:text-2xl text-white tracking-tight">
-                Integrates directly <span className="text-brand-yellow italic font-medium">with energy hardware</span>
+                {t.energyIntelligence.subtitle2.white} <span className="text-brand-yellow italic font-medium">{t.energyIntelligence.subtitle2.yellow}</span>
               </p>
             </motion.div>
           </div>
@@ -927,11 +944,11 @@ export default function App() {
             className="flex flex-col gap-6 max-w-3xl md:max-w-[55%]"
           >
             <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium tracking-tight">
-              <span className="text-brand-yellow">The</span> <span className="text-white">mission</span>
+              <span className="text-brand-yellow">{t.energyIntelligence.mission.yellow}</span> <span className="text-white">{t.energyIntelligence.mission.white}</span>
             </h3>
             <div className="p-0 md:p-0">
               <p className="text-lg md:text-xl lg:text-2xl text-white/90 leading-tight font-light tracking-tight text-left">
-                To develop a SaaS platform for solar installers and operators, offering control over installation and management of photovoltaic systems, from modules to multi-site portfolios.
+                {t.energyIntelligence.missionDesc}
               </p>
             </div>
           </motion.div>
@@ -971,9 +988,9 @@ export default function App() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-none"
+              className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-none whitespace-pre-line"
             >
-              <span className="text-white">The</span> <span className="text-brand-yellow">challenge</span>
+              <span className="text-white">{t.challenge.title.white}</span> <span className="text-brand-yellow">{t.challenge.title.yellow}</span>
             </motion.h2>
             
             <motion.div 
@@ -984,7 +1001,7 @@ export default function App() {
               className="max-w-2xl"
             >
               <p className="text-xl md:text-2xl text-white/90 leading-snug">
-                We joined a project in progress that required seamless integration between software and solar hardware. <span className="text-brand-yellow">The main task was to stabilize the existing monitoring system, manage massive solar data, and ensure infrastructure reliability.</span>
+                {t.challenge.desc}
               </p>
             </motion.div>
           </div>
@@ -1007,12 +1024,12 @@ export default function App() {
               transition={{ duration: 0.8 }}
               className="text-4xl md:text-5xl font-bold tracking-tight"
             >
-              <span className="text-brand-yellow">Strategic</span> <span className="text-white">approach</span>
+              <span className="text-brand-yellow">{t.challenge.strategicTitle.yellow}</span> <span className="text-white">{t.challenge.strategicTitle.white}</span>
             </motion.h3>
 
             {/* Approach Grid (Desktop) */}
             <div className="hidden md:grid grid-cols-2 gap-6">
-              {strategicApproachItems.map((item, index) => (
+              {t.challenge.items.map((item, index) => (
                 <motion.div 
                   key={index}
                   initial={{ opacity: 0, y: 30 }}
@@ -1045,16 +1062,16 @@ export default function App() {
                     onDragEnd={(_, info) => {
                       const swipeThreshold = 50;
                       if (info.offset.x < -swipeThreshold) {
-                        setActiveApproach((prev) => (prev + 1) % strategicApproachItems.length);
+                        setActiveApproach((prev) => (prev + 1) % t.challenge.items.length);
                       } else if (info.offset.x > swipeThreshold) {
-                        setActiveApproach((prev) => (prev - 1 + strategicApproachItems.length) % strategicApproachItems.length);
+                        setActiveApproach((prev) => (prev - 1 + t.challenge.items.length) % t.challenge.items.length);
                       }
                     }}
                     className="absolute inset-0 bg-white/5 p-3 md:p-8 rounded-2xl border border-white/10 flex flex-col justify-center cursor-grab active:cursor-grabbing backface-hidden"
                   >
                     <p className="text-lg leading-relaxed">
-                      <span className="text-brand-yellow font-bold block mb-2">{strategicApproachItems[activeApproach].label}:</span>
-                      <span className="text-white/70">{strategicApproachItems[activeApproach].content}</span>
+                      <span className="text-brand-yellow font-bold block mb-2">{t.challenge.items[activeApproach].label}:</span>
+                      <span className="text-white/70">{t.challenge.items[activeApproach].content}</span>
                     </p>
                   </motion.div>
                 </AnimatePresence>
@@ -1062,7 +1079,7 @@ export default function App() {
 
               {/* Carousel Indicators */}
               <div className="flex justify-center gap-3 mt-8">
-                {strategicApproachItems.map((_, i) => (
+                {t.challenge.items.map((_, i) => (
                   <button
                     key={i}
                     onClick={() => setActiveApproach(i)}
@@ -1092,7 +1109,7 @@ export default function App() {
               transition={{ duration: 0.8 }}
               className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-none"
             >
-              <span className="text-white">Business</span> <span className="text-brand-yellow">impact</span>
+              <span className="text-white">{t.businessImpact.title.white}</span> <span className="text-brand-yellow">{t.businessImpact.title.yellow}</span>
             </motion.h2>
             
             <motion.div 
@@ -1103,9 +1120,9 @@ export default function App() {
               className="max-w-2xl"
             >
               <p className="text-xl md:text-2xl text-white font-medium leading-tight">
-                A stable, high-performance monitoring platform <br />
+                {t.businessImpact.subtitle.white} <br />
                 <span className="text-brand-yellow italic">
-                  that bridges the gap between solar hardware and data efficiency.
+                  {t.businessImpact.subtitle.yellow}
                 </span>
               </p>
             </motion.div>
@@ -1192,7 +1209,7 @@ export default function App() {
             className="bg-white/5 border border-white/10 p-4 md:p-12 rounded-3xl backdrop-blur-sm"
           >
             <p className="text-lg md:text-2xl text-white/90 leading-relaxed text-center max-w-5xl mx-auto">
-              <span className="text-brand-yellow font-bold">Tigo Energy Intelligence</span> is used by thousands of solar installers, asset managers, and building owners <span className="text-brand-yellow font-bold">in 100+ countries</span>. The all-in-one commissioning and monitoring platform <span className="text-brand-yellow font-bold">enables module and system-level visibility</span> along with a suite of multi-site management capabilities.
+              <span className="text-brand-yellow font-bold">Tigo Energy Intelligence</span> {t.businessImpact.summaryParts.part1} <span className="text-brand-yellow font-bold">in 100+ countries</span>. {t.businessImpact.summaryParts.part2} <span className="text-brand-yellow font-bold">enables module and system-level visibility</span> {t.businessImpact.summaryParts.part3}
             </p>
           </motion.div>
         </div>
@@ -1212,7 +1229,7 @@ export default function App() {
               transition={{ duration: 0.8 }}
               className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-none"
             >
-              <span className="text-white">The</span> <span className="text-brand-yellow">resolution</span>
+              <span className="text-white">{t.resolution.title.white}</span> <span className="text-brand-yellow">{t.resolution.title.yellow}</span>
             </motion.h2>
             
             <motion.div 
@@ -1223,9 +1240,9 @@ export default function App() {
               className="max-w-2xl"
             >
               <p className="text-xl md:text-2xl text-white font-medium leading-tight">
-                We helped improve the financial results <br />
+                {t.resolution.subtitle.white} <br />
                 <span className="text-brand-yellow italic">
-                  of Tigo's clients' businesses and projects.
+                  {t.resolution.subtitle.yellow}
                 </span>
               </p>
             </motion.div>
@@ -1242,44 +1259,7 @@ export default function App() {
 
           {/* Resolution Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-            {[
-              {
-                icon: (
-                  <div className="relative w-20 h-20 flex items-center justify-center">
-                    <img src="/images/truck.svg" alt="Truck Icon" className="w-16 h-16 object-contain" referrerPolicy="no-referrer" />
-                  </div>
-                ),
-                title: "Lower O&M",
-                desc: "Avoid truck rolls with remote access to any connected component on any site from anywhere."
-              },
-              {
-                icon: (
-                  <div className="relative w-20 h-20 flex items-center justify-center">
-                    <img src="/images/desctop.svg" alt="Desktop Icon" className="w-16 h-16 object-contain" referrerPolicy="no-referrer" />
-                  </div>
-                ),
-                title: "More production",
-                desc: "Minimize lost production with automated monitoring of fleet health and performance."
-              },
-              {
-                icon: (
-                  <div className="relative w-20 h-20 flex items-center justify-center">
-                    <img src="/images/time.svg" alt="Time Icon" className="w-16 h-16 object-contain" referrerPolicy="no-referrer" />
-                  </div>
-                ),
-                title: "Faster commissioning",
-                desc: "Create a virtual layout in minutes with bulk scanning of Tigo TS4's and equipment auto-detection."
-              },
-              {
-                icon: (
-                  <div className="relative w-20 h-20 flex items-center justify-center">
-                    <img src="/images/like.svg" alt="Like Icon" className="w-16 h-16 object-contain" referrerPolicy="no-referrer" />
-                  </div>
-                ),
-                title: "Happier customers",
-                desc: "Get critical alerts from intelligent software working for you 24/7, not from customers."
-              }
-            ].map((item, index) => (
+            {t.resolution.items.map((item, index) => (
               <motion.div 
                 key={index}
                 initial={{ opacity: 0, y: 30 }}
@@ -1290,7 +1270,14 @@ export default function App() {
               >
                 <div className="flex flex-col gap-4">
                   <div className="mb-2">
-                    {item.icon}
+                    <div className="relative w-20 h-20 flex items-center justify-center">
+                      <img 
+                        src={index === 0 ? "/images/truck.svg" : index === 1 ? "/images/desctop.svg" : index === 2 ? "/images/time.svg" : "/images/like.svg"} 
+                        alt={`${item.title} Icon`} 
+                        className="w-16 h-16 object-contain" 
+                        referrerPolicy="no-referrer" 
+                      />
+                    </div>
                   </div>
                 </div>
                 <div className="flex flex-col gap-3">
@@ -1342,7 +1329,7 @@ export default function App() {
               transition={{ duration: 0.8 }}
               className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-none uppercase"
             >
-              <span className="text-white">Scope</span> <span className="text-brand-yellow">of work</span>
+              <span className="text-white">{t.scope.title.white}</span> <span className="text-brand-yellow">{t.scope.title.yellow}</span>
             </motion.h2>
             
             <motion.div 
@@ -1353,9 +1340,9 @@ export default function App() {
               className="max-w-2xl"
             >
               <p className="text-xl md:text-2xl text-white font-medium leading-tight">
-                While working on the project, <br />
+                {t.scope.subtitle.white} <br />
                 <span className="text-brand-yellow italic">
-                  we provided the following services
+                  {t.scope.subtitle.yellow}
                 </span>
               </p>
             </motion.div>
@@ -1374,18 +1361,7 @@ export default function App() {
           <div className="flex flex-col gap-0">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-24 gap-y-0">
               {/* Combined list for easier slicing on mobile */}
-              {[
-                "Custom Web Development",
-                "Custom Mobile Development",
-                "AI & ML Software Development",
-                "AI Consulting",
-                "Team Extension",
-                "Business Analysis",
-                "Design Development",
-                "DevOps",
-                "Quality Assurance",
-                "Software & Code Audit"
-              ].map((service, index) => {
+              {t.scope.items.map((service, index) => {
                 const isHiddenOnMobile = index >= 6 && !showMoreScope;
                 return (
                   <motion.div 
@@ -1410,7 +1386,7 @@ export default function App() {
                 onClick={() => setShowMoreScope(!showMoreScope)}
                 className="flex items-center gap-2 text-brand-yellow font-bold uppercase tracking-widest text-sm cursor-pointer"
               >
-                {showMoreScope ? "Show Less" : "Show More"}
+                {showMoreScope ? t.final.showLess || "Show Less" : t.final.showMore || "Show More"}
                 <ChevronDown className={`transition-transform duration-300 ${showMoreScope ? 'rotate-180' : ''}`} size={18} />
               </button>
             </div>
@@ -1464,15 +1440,7 @@ export default function App() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             {/* Left: Tech List */}
             <div className="flex flex-col">
-              {[
-                "Node.js backend",
-                "Vue.js frontend",
-                "Ionic Vue for mobile",
-                "Python for AI",
-                "Azure Devops for Devops",
-                "Figma for design",
-                "Gitlab for management"
-              ].map((tech, index) => {
+              {t.techStack.items.map((tech, index) => {
                 const isHiddenOnMobile = index >= 6 && !showMoreTech;
                 return (
                   <motion.div 
@@ -1496,7 +1464,7 @@ export default function App() {
                   onClick={() => setShowMoreTech(!showMoreTech)}
                   className="flex items-center gap-2 text-brand-yellow font-bold uppercase tracking-widest text-sm cursor-pointer"
                 >
-                  {showMoreTech ? "Show Less" : "Show More"}
+                  {showMoreTech ? t.final.showLess || "Show Less" : t.final.showMore || "Show More"}
                   <ChevronDown className={`transition-transform duration-300 ${showMoreTech ? 'rotate-180' : ''}`} size={18} />
                 </button>
               </div>
@@ -1544,10 +1512,10 @@ export default function App() {
             </h2>
                 <div className="flex flex-col gap-2">
                   <p className="text-2xl md:text-3xl text-white font-medium tracking-tight">
-                    Complex solar portfolio management platform
+                    {t.predictPlus.subtitle1}
                   </p>
                   <p className="text-2xl md:text-3xl text-white font-medium tracking-tight">
-                    Designed specifically <span className="text-brand-yellow italic">for government use</span>
+                    {t.predictPlus.subtitle2.white} <span className="text-brand-yellow italic">{t.predictPlus.subtitle2.yellow}</span>
                   </p>
                 </div>
               </motion.div>
@@ -1559,7 +1527,7 @@ export default function App() {
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="text-lg md:text-xl text-white/80 leading-relaxed max-w-xl font-light font-sans"
               >
-                Predict+ uses AI and machine learning technology to automatically forecast electricity generation and consumption of individual endpoints or aggregated energy portfolios for utilities, IPP's and grid planners.
+                {t.predictPlus.description}
               </motion.p>
             </div>
 
@@ -1740,7 +1708,7 @@ export default function App() {
               transition={{ duration: 0.8 }}
               className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-none uppercase"
             >
-              <span className="text-white">Predict+</span> <span className="text-brand-yellow">impact</span>
+              <span className="text-white">{t.predictImpact.title.white}</span> <span className="text-brand-yellow">{t.predictImpact.title.yellow}</span>
             </motion.h2>
             
             <motion.div 
@@ -1751,20 +1719,16 @@ export default function App() {
               className="max-w-2xl"
             >
               <p className="text-xl md:text-2xl text-white font-medium leading-tight">
-                Empowering grid operators with <br />
+                {t.predictImpact.subtitle.white} <br />
                 <span className="text-brand-yellow italic">
-                  unprecedented forecasting precision and control.
+                  {t.predictImpact.subtitle.yellow}
                 </span>
               </p>
             </motion.div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-4 lg:gap-8">
-            {[
-              { title: "98.5%", label: "Forecast Accuracy", desc: "Industry-leading precision for grid demand prediction." },
-              { title: "100+", label: "Countries", desc: "Global deployment supporting diverse energy markets." },
-              { title: "24/7", label: "Real-time Monitoring", desc: "Automated insights working around the clock." }
-            ].map((stat, index) => (
+            {t.predictImpact.stats.map((stat, index) => (
               <motion.div 
                 key={index}
                 initial={{ opacity: 0, y: 30 }}
@@ -1797,11 +1761,11 @@ export default function App() {
             className="mb-12 flex flex-col lg:flex-row lg:items-baseline lg:gap-12"
           >
             <h2 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-none uppercase">
-              <span className="text-white">Predict+ </span>
-              <span className="text-brand-yellow">scope</span>
+              <span className="text-white">{t.predictScope.title.white}</span>
+              <span className="text-brand-yellow">{t.predictScope.title.yellow}</span>
             </h2>
             <p className="text-xl md:text-2xl text-white font-medium leading-tight">
-              Comprehensive development and <span className="text-brand-yellow italic">AI integration services</span>
+              {t.predictScope.subtitle.white} <span className="text-brand-yellow italic">{t.predictScope.subtitle.yellow}</span>
             </p>
           </motion.div>
 
@@ -1818,18 +1782,7 @@ export default function App() {
           <div className="flex flex-col gap-0">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-24 gap-y-0">
               {/* Combined list for easier slicing on mobile */}
-              {[
-                "Custom Web Development",
-                "Custom Mobile Development",
-                "AI & ML Software Development",
-                "AI Consulting",
-                "Team Extension",
-                "Business Analysis",
-                "Design Development",
-                "DevOps",
-                "Quality Assurance",
-                "Cloud Infrastructure"
-              ].map((service, index) => {
+              {t.predictScope.items.map((service, index) => {
                 const isHiddenOnMobile = index >= 6 && !showMorePredictScope;
                 return (
                   <motion.div
@@ -1854,7 +1807,7 @@ export default function App() {
                 onClick={() => setShowMorePredictScope(!showMorePredictScope)}
                 className="flex items-center gap-2 text-brand-yellow font-bold uppercase tracking-widest text-sm cursor-pointer"
               >
-                {showMorePredictScope ? "Show Less" : "Show More"}
+                {showMorePredictScope ? t.final.showLess || "Show Less" : t.final.showMore || "Show More"}
                 <ChevronDown className={`transition-transform duration-300 ${showMorePredictScope ? 'rotate-180' : ''}`} size={18} />
               </button>
             </div>
@@ -1909,14 +1862,7 @@ export default function App() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             {/* Left: Tech List */}
             <div className="flex flex-col">
-              {[
-                "Java for backend",
-                "React.js for frontend",
-                "Azure Devops for devops",
-                "Python for AI",
-                "Figma for design",
-                "Azure for management"
-              ].map((tech, index) => (
+              {t.predictTech.items.map((tech, index) => (
                 <motion.div 
                   key={index}
                   initial={{ opacity: 0, x: -20 }}
@@ -1986,10 +1932,10 @@ export default function App() {
             </h2>
             <div className="md:text-left max-w-md">
               <p className="text-xl md:text-2xl text-white font-medium leading-tight">
-                Results that speak for themselves.
+                {t.results.subtitle1}
               </p>
               <p className="text-xl md:text-2xl text-brand-yellow italic font-medium leading-tight">
-                Just the facts.
+                {t.results.subtitle2}
               </p>
             </div>
           </div>
@@ -2002,15 +1948,15 @@ export default function App() {
             <div className="flex flex-col gap-12">
               <div className="flex items-start justify-between">
                 <h3 className="text-4xl md:text-5xl font-bold">
-                  <span className="text-brand-yellow">Team</span> <span className="text-white">composition</span>
+                  <span className="text-brand-yellow">{t.results.composition.yellow}</span> <span className="text-white">{t.results.composition.white}</span>
                 </h3>
                 
                 {/* Legend - Vertical as in mockup */}
                 <div className="flex flex-col gap-3 mt-2">
                   {[
-                    { name: "Senior", color: "#FBF950" },
-                    { name: "Middle", color: "#FF69B4" },
-                    { name: "Junior", color: "#4ADE80" }
+                    { name: t.results.senior, color: "#FBF950" },
+                    { name: t.results.middle, color: "#FF69B4" },
+                    { name: t.results.junior, color: "#4ADE80" }
                   ].map((item) => (
                     <div key={item.name} className="flex items-center gap-3">
                       <div className="w-4 h-4 rounded-sm" style={{ backgroundColor: item.color }} />
@@ -2087,7 +2033,7 @@ export default function App() {
                     </div>
                   </div>
                   <p className="text-2xl font-bold">
-                    <span className="text-white">Typical</span> <span className="text-brand-yellow">teams</span>
+                    <span className="text-white">{t.results.typicalTeams.white}</span> <span className="text-brand-yellow">{t.results.typicalTeams.yellow}</span>
                   </p>
                 </motion.div>
 
@@ -2147,7 +2093,7 @@ export default function App() {
                     </div>
                   </div>
                   <p className="text-2xl font-bold">
-                    <span className="text-brand-yellow">WAMI</span> <span className="text-white">teams</span>
+                    <span className="text-brand-yellow">{t.results.wamiTeams.yellow}</span> <span className="text-white">{t.results.wamiTeams.white}</span>
                   </p>
                 </motion.div>
               </div>
@@ -2168,7 +2114,7 @@ export default function App() {
                 className="flex flex-col items-center justify-center text-center w-full lg:w-fit p-8 lg:p-0 bg-white/5 lg:bg-transparent border border-white/10 lg:border-none rounded-3xl lg:rounded-none backdrop-blur-sm lg:backdrop-blur-none"
               >
                 <span className="text-5xl md:text-6xl font-black text-brand-yellow leading-none mb-4 whitespace-nowrap">98.5%</span>
-                <p className="text-lg md:text-2xl text-white font-medium tracking-tight lg:whitespace-nowrap">Forecasting accuracy</p>
+                <p className="text-lg md:text-2xl text-white font-medium tracking-tight lg:whitespace-nowrap">{t.results.accuracy}</p>
               </motion.div>
 
               {/* Stat 2 */}
@@ -2181,7 +2127,7 @@ export default function App() {
                 className="flex flex-col items-center text-center w-full lg:w-fit p-8 lg:p-0 bg-white/5 lg:bg-transparent border border-white/10 lg:border-none rounded-3xl lg:rounded-none backdrop-blur-sm lg:backdrop-blur-none"
               >
                 <span className="text-5xl md:text-6xl font-black text-brand-yellow leading-none mb-4 whitespace-nowrap">1 000 000+</span>
-                <p className="text-lg md:text-2xl text-white font-medium tracking-tight lg:whitespace-nowrap">Data points processed daily</p>
+                <p className="text-lg md:text-2xl text-white font-medium tracking-tight lg:whitespace-nowrap">{t.results.dataPoints}</p>
               </motion.div>
             </div>
           </div>
@@ -2203,14 +2149,14 @@ export default function App() {
             {/* Main Headline */}
             <div className="flex flex-col items-center gap-6">
               <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl leading-[0.85] tracking-tighter uppercase text-center">
-                <span className="text-brand-yellow">WE’RE</span> <span className="text-white">HAPPY</span>
+                <span className="text-brand-yellow">{t.final.headlineYellow}</span> <span className="text-white">{t.final.headlineWhite}</span>
               </h1>
               <div className="flex flex-col items-center gap-2">
                 <h2 className="text-xl md:text-3xl lg:text-4xl text-white text-center uppercase font-bold tracking-tight">
-                  TO WALK YOU THROUGH
+                  {t.final.subtitleWhite}
                 </h2>
                 <h2 className="text-xl md:text-3xl lg:text-4xl text-brand-yellow text-center uppercase font-bold tracking-tight">
-                  THE DETAILS AND NEXT STEPS
+                  {t.final.subtitleYellow}
                 </h2>
               </div>
             </div>
@@ -2305,29 +2251,29 @@ export default function App() {
 
               <div className="flex flex-col gap-6">
                 <div className="flex flex-col gap-1">
-                  <h3 className="text-2xl font-bold text-white tracking-tight">Send us an email</h3>
-                  <p className="text-white/40 text-sm">Choose your preferred way to contact us</p>
+                  <h3 className="text-2xl font-bold text-white tracking-tight">{t.final.emailModalTitle}</h3>
+                  <p className="text-white/40 text-sm">{t.final.emailModalSubtitle}</p>
                 </div>
 
                 <div className="flex flex-col gap-3">
                   {[
                     { 
-                      label: "Open in Gmail", 
+                      label: t.final.openGmail, 
                       icon: <Globe size={20} />, 
                       href: "https://mail.google.com/mail/?view=cm&fs=1&to=info@wamisoftware.com" 
                     },
                     { 
-                      label: "Open in Outlook", 
+                      label: t.final.openOutlook, 
                       icon: <Mail size={20} />, 
                       href: "https://outlook.office.com/mail/deeplink/compose?to=info@wamisoftware.com" 
                     },
                     { 
-                      label: "Open in Default App", 
+                      label: t.final.openDefault, 
                       icon: <ExternalLink size={20} />, 
                       href: "mailto:info@wamisoftware.com" 
                     },
                     { 
-                      label: isCopied ? "Email Copied!" : "Copy Email Address", 
+                      label: isCopied ? t.final.emailCopied : t.final.copyEmail, 
                       icon: isCopied ? <Check size={20} className="text-green-400" /> : <Copy size={20} />, 
                       action: () => {
                         navigator.clipboard.writeText("info@wamisoftware.com");
