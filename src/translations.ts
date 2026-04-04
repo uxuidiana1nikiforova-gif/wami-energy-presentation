@@ -297,6 +297,7 @@ export const translations = {
     final: {
       headlineYellow: "WE’RE",
       headlineWhite: "HAPPY",
+      headlineYellow2: "",
       subtitleWhite: "TO WALK YOU THROUGH",
       subtitleYellow: "THE DETAILS AND NEXT STEPS",
       email: "info@wamisoftware.com",
@@ -607,8 +608,9 @@ export const translations = {
       junior: "Junior",
     },
     final: {
-      headlineYellow: "WIR FREUEN UNS",
-      headlineWhite: "",
+      headlineYellow: "WIR",
+      headlineWhite: "FREUEN",
+      headlineYellow2: "UNS",
       subtitleWhite: "SIE DURCH DIE DETAILS UND",
       subtitleYellow: "NÄCHSTEN SCHRITTE ZU FÜHREN",
       email: "info@wamisoftware.com",

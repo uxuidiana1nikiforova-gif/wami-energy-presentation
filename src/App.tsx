@@ -1563,13 +1563,13 @@ export default function App() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="mb-16 flex flex-col lg:flex-row lg:items-baseline lg:gap-12"
+            className="mb-16 flex flex-col lg:flex-row lg:items-center lg:gap-12"
           >
             <h2 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-none uppercase">
               <span className="text-white">The </span>
               <span className="text-brand-yellow">solutions</span>
             </h2>
-            <p className="text-xl md:text-2xl text-white font-medium leading-tight">
+            <p className="text-xl md:text-2xl text-white font-medium leading-tight lg:-mt-2">
               Multiple features to enhance <span className="text-brand-yellow italic">energy operations</span>
             </p>
           </motion.div>
@@ -1758,13 +1758,13 @@ export default function App() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="mb-12 flex flex-col lg:flex-row lg:items-baseline lg:gap-12"
+            className="mb-12 flex flex-col lg:flex-row lg:items-center lg:gap-12"
           >
             <h2 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-none uppercase">
               <span className="text-white">{t.predictScope.title.white}</span>
               <span className="text-brand-yellow">{t.predictScope.title.yellow}</span>
             </h2>
-            <p className="text-xl md:text-2xl text-white font-medium leading-tight">
+            <p className="text-xl md:text-2xl text-white font-medium leading-tight lg:-mt-2">
               {t.predictScope.subtitle.white} <span className="text-brand-yellow italic">{t.predictScope.subtitle.yellow}</span>
             </p>
           </motion.div>
@@ -2149,7 +2149,11 @@ export default function App() {
             {/* Main Headline */}
             <div className="flex flex-col items-center gap-6">
               <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl leading-[0.85] tracking-tighter uppercase text-center">
-                <span className="text-brand-yellow">{t.final.headlineYellow}</span> <span className="text-white">{t.final.headlineWhite}</span>
+                <span className="text-brand-yellow">{t.final.headlineYellow}</span>{" "}
+                <span className="text-white">{t.final.headlineWhite}</span>{" "}
+                {t.final.headlineYellow2 && (
+                  <span className="text-brand-yellow">{t.final.headlineYellow2}</span>
+                )}
               </h1>
               <div className="flex flex-col items-center gap-2">
                 <h2 className="text-xl md:text-3xl lg:text-4xl text-white text-center uppercase font-bold tracking-tight">
