@@ -100,8 +100,6 @@ export default function App() {
   const [showMoreScope, setShowMoreScope] = useState(false);
   const [showMoreTech, setShowMoreTech] = useState(false);
   const [showMorePredictScope, setShowMorePredictScope] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
 
@@ -142,34 +140,6 @@ export default function App() {
       </div>
     );
   };
-
-  const navItems = [
-    { label: t.nav.whoWeAre, index: 1 },
-    { label: t.nav.expertise, index: 2 },
-    { 
-      label: t.nav.energyIntelligence, 
-      items: [
-        { label: t.nav.overview, index: 3 },
-        { label: t.nav.approach, index: 4 },
-        { label: t.nav.impact, index: 5 },
-        { label: t.nav.resolution, index: 6 },
-        { label: t.nav.scope, index: 7 },
-        { label: t.nav.techStack, index: 8 }
-      ]
-    },
-    { 
-      label: t.nav.predictPlus, 
-      items: [
-        { label: t.nav.overview, index: 9 },
-        { label: t.nav.solutions, index: 10 },
-        { label: t.nav.impact, index: 11 },
-        { label: t.nav.scope, index: 12 },
-        { label: t.nav.techStack, index: 13 }
-      ]
-    },
-    { label: t.nav.results, index: 14 },
-    { label: t.nav.contacts, index: 15 }
-  ];
 
   const stats = [
     { value: "12", label1: t.whoWeAre.stats[0].label1, label2: t.whoWeAre.stats[0].label2 },
@@ -234,21 +204,6 @@ export default function App() {
     return () => observer.disconnect();
   }, []);
 
-  const scrollToSlide = (index: number) => {
-    const section = sectionRefs.current[index];
-    if (section) {
-      const headerHeight = 80; 
-      const elementPosition = section.getBoundingClientRect().top + window.pageYOffset;
-      const offsetPosition = elementPosition - headerHeight;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth"
-      });
-      setIsMobileMenuOpen(false);
-    }
-  };
-
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -256,275 +211,28 @@ export default function App() {
   return (
     <div className="min-h-screen bg-black overflow-x-hidden selection:bg-brand-yellow selection:text-black">
       {/* Top Header Navigation */}
-      <header className="fixed top-0 left-0 right-0 z-[100] bg-black/60 backdrop-blur-xl border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-12 h-20 flex items-center justify-between">
-          {/* Wami Logo (Left) */}
-          <button onClick={scrollToTop} className="hover:opacity-80 transition-opacity cursor-pointer">
+      <header className="absolute top-0 left-0 right-0 z-[100]">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-12 h-20 flex items-end justify-start gap-6 md:gap-10 pb-4">
+          {/* Wami Logo */}
+          <button onClick={scrollToTop} className="hover:opacity-80 transition-opacity cursor-pointer flex items-end">
             <img 
               src="/images/logo_wami.svg" 
               alt="Wami Software" 
-              className="h-8 md:h-10 w-auto"
+              className="h-7 md:h-9 w-auto"
               referrerPolicy="no-referrer"
             />
           </button>
 
-          {/* Navigation Items (Center) */}
-          <nav className="hidden lg:flex items-center gap-2">
-            {navItems.map((item, i) => {
-              const isActive = item.items 
-                ? item.items.some(sub => sub.index === currentSlide - 1)
-                : item.index === currentSlide - 1;
-
-              if (item.items) {
-                return (
-                  <div 
-                    key={i} 
-                    className="relative group"
-                    onMouseEnter={() => setActiveDropdown(item.label)}
-                    onMouseLeave={() => setActiveDropdown(null)}
-                  >
-                    <button className={`px-4 py-2 rounded-full text-base font-medium flex items-center gap-2 transition-all duration-300 cursor-pointer ${
-                      isActive ? "text-brand-yellow bg-white/5" : "text-white/60 hover:text-white"
-                    }`}>
-                      {item.label}
-                      <ChevronDown size={14} className={`transition-transform duration-300 ${activeDropdown === item.label ? "rotate-180" : ""}`} />
-                    </button>
-
-                    {/* Dropdown Menu */}
-                    <AnimatePresence>
-                      {activeDropdown === item.label && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                          animate={{ opacity: 1, y: 0, scale: 1 }}
-                          exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                          transition={{ duration: 0.2 }}
-                          className="absolute top-full left-0 mt-2 w-64 bg-black/90 backdrop-blur-2xl border border-white/10 rounded-2xl p-2 shadow-2xl"
-                        >
-                          {item.items.map((subItem, si) => (
-                            <button
-                              key={si}
-                              onClick={() => {
-                                scrollToSlide(subItem.index);
-                                setActiveDropdown(null);
-                              }}
-                              className={`w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 cursor-pointer ${
-                                currentSlide === subItem.index + 1
-                                  ? "bg-brand-yellow text-black"
-                                  : "text-white/60 hover:bg-white/5 hover:text-white"
-                              }`}
-                            >
-                              {subItem.label}
-                            </button>
-                          ))}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                );
-              }
-
-              return (
-                <button
-                  key={i}
-                  onClick={() => scrollToSlide(item.index || 0)}
-                  className={`px-4 py-2 rounded-full text-base font-medium transition-all duration-300 cursor-pointer ${
-                    isActive ? "text-brand-yellow bg-white/5" : "text-white/60 hover:text-white"
-                  }`}
-                >
-                  {item.label}
-                </button>
-              );
-            })}
-            
-            {/* Language Switcher */}
-            <div className="ml-4 flex items-center bg-white/5 rounded-full p-1 border border-white/10">
-              <button 
-                onClick={() => setLanguage("en")}
-                className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${language === "en" ? "bg-brand-yellow text-black" : "text-white/40 hover:text-white"}`}
-              >
-                EN
-              </button>
-              <button 
-                onClick={() => setLanguage("de")}
-                className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${language === "de" ? "bg-brand-yellow text-black" : "text-white/40 hover:text-white"}`}
-              >
-                DE
-              </button>
-            </div>
-          </nav>
-
-          {/* Right Side: Tigo Logo & Mobile Menu */}
-          <div className="flex items-center gap-6 lg:gap-10">
+          {/* Tigo Logo */}
+          <div className="flex items-end">
             <img 
               src="/images/logo_tigo.svg" 
               alt="Tigo" 
-              className="h-4 md:h-5 w-auto hidden sm:block"
+              className="h-4 md:h-5 w-auto mb-[2px] md:mb-[3px]"
               referrerPolicy="no-referrer"
             />
-            
-            {/* Mobile Menu Toggle */}
-            <div className="lg:hidden flex items-center gap-4">
-               {/* Mobile Language Switcher */}
-               <div className="flex items-center bg-white/5 rounded-full p-1 border border-white/10 mr-2">
-                <button 
-                  onClick={() => setLanguage("en")}
-                  className={`px-2 py-1 rounded-full text-[10px] font-bold transition-all ${language === "en" ? "bg-brand-yellow text-black" : "text-white/40"}`}
-                >
-                  EN
-                </button>
-                <button 
-                  onClick={() => setLanguage("de")}
-                  className={`px-2 py-1 rounded-full text-[10px] font-bold transition-all ${language === "de" ? "bg-brand-yellow text-black" : "text-white/40"}`}
-                >
-                  DE
-                </button>
-              </div>
-               <span className="text-brand-yellow font-mono text-xl font-black">
-                 {(currentSlide).toString().padStart(2, '0')}
-               </span>
-               <button 
-                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                 className="w-10 h-10 flex flex-col items-center justify-center gap-1.5 cursor-pointer"
-               >
-                 <motion.span 
-                   animate={isMobileMenuOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }}
-                   className="w-6 h-0.5 bg-white block" 
-                 />
-                 <motion.span 
-                   animate={isMobileMenuOpen ? { opacity: 0 } : { opacity: 1 }}
-                   className="w-6 h-0.5 bg-white block" 
-                 />
-                 <motion.span 
-                   animate={isMobileMenuOpen ? { rotate: -45, y: -8 } : { rotate: 0, y: 0 }}
-                   className="w-6 h-0.5 bg-white block" 
-                 />
-               </button>
-            </div>
           </div>
         </div>
-
-        {/* Mobile Menu Overlay */}
-        <AnimatePresence>
-          {isMobileMenuOpen && (
-            <>
-              {/* Backdrop */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="fixed inset-0 z-[90] bg-black/60 backdrop-blur-sm lg:hidden"
-              />
-              
-              {/* Menu Panel */}
-              <motion.div
-                initial={{ opacity: 0, y: -20, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                className="fixed top-24 left-4 right-4 z-[100] lg:hidden bg-black border border-white/10 rounded-3xl shadow-2xl overflow-hidden max-h-[80vh] overflow-y-auto"
-              >
-                <div className="p-6 flex flex-col gap-2">
-                  {navItems.map((item, i) => (
-                    <motion.div 
-                      key={i}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.05 }}
-                      className="flex flex-col"
-                    >
-                      {item.items ? (
-                        <div className="flex flex-col">
-                          <button 
-                            onClick={() => setActiveDropdown(activeDropdown === item.label ? null : item.label)}
-                            className={`flex items-center justify-between w-full px-4 py-4 rounded-2xl text-xl font-bold transition-all cursor-pointer ${
-                              currentSlide >= (item.items[0].index + 1) && currentSlide <= (item.items[item.items.length - 1].index + 1)
-                                ? "text-brand-yellow" 
-                                : "text-white/80"
-                            }`}
-                          >
-                            {item.label}
-                            <ChevronDown size={20} className={`transition-transform duration-300 ${activeDropdown === item.label ? "rotate-180" : ""}`} />
-                          </button>
-                          
-                          <AnimatePresence>
-                            {activeDropdown === item.label && (
-                              <motion.div
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: "auto", opacity: 1 }}
-                                exit={{ height: 0, opacity: 0 }}
-                                className="overflow-hidden bg-white/5 rounded-2xl mt-1"
-                              >
-                                <div className="p-2 flex flex-col gap-1">
-                                  {item.items.map((sub, si) => (
-                                    <button
-                                      key={si}
-                                      onClick={() => {
-                                        scrollToSlide(sub.index);
-                                        setIsMobileMenuOpen(false);
-                                      }}
-                                      className={`text-left px-4 py-3 rounded-xl text-base font-medium transition-all cursor-pointer ${
-                                        currentSlide === sub.index + 1 
-                                          ? "bg-brand-yellow text-black" 
-                                          : "text-white/60 hover:bg-white/5 hover:text-white"
-                                      }`}
-                                    >
-                                      {sub.label}
-                                    </button>
-                                  ))}
-                                </div>
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-                        </div>
-                      ) : (
-                        <button
-                          onClick={() => scrollToSlide(item.index || 0)}
-                          className={`text-left px-4 py-4 rounded-2xl text-xl font-bold transition-all cursor-pointer ${
-                            currentSlide === (item.index || 0) + 1 
-                              ? "text-brand-yellow" 
-                              : "text-white/80 hover:bg-white/5 hover:text-white"
-                          }`}
-                        >
-                          {item.label}
-                        </button>
-                      )}
-                    </motion.div>
-                  ))}
-                </div>
-                
-                {/* Mobile Menu Footer */}
-                <div className="p-6 bg-white/5 border-t border-white/10 flex items-center justify-between">
-                  <img 
-                    src="/images/logo_wami.svg" 
-                    alt="Wami Software" 
-                    className="h-5 w-auto opacity-50"
-                    referrerPolicy="no-referrer"
-                  />
-                  <div className="flex gap-6">
-                    <a 
-                      href="https://www.linkedin.com/company/wamisoftware" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-white/40 hover:text-brand-yellow transition-colors"
-                    >
-                      <Linkedin size={20} />
-                    </a>
-                    <button 
-                      onClick={() => {
-                        setIsEmailModalOpen(true);
-                        setIsMobileMenuOpen(false);
-                      }}
-                      className="text-white/40 hover:text-brand-yellow transition-colors cursor-pointer"
-                    >
-                      <Mail size={20} />
-                    </button>
-                  </div>
-                </div>
-              </motion.div>
-            </>
-          )}
-        </AnimatePresence>
       </header>
 
       {/* Back to Top Button */}
